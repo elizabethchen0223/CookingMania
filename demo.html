@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en-us">
+	<head>
+		<meta charset="UTF-8">
+
+
+		<!-- P5 libraries -->
+		<script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js"></script>
+
+		<!-- A-Frame libraries -->
+		<script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+
+		<!-- AFrameP5 library -->
+		<script src="https://craignyu.github.io/aframep5/libraries/aframep5.js"></script>
+
+		<!-- P5 Sketch -->
+		<script src="sketch.js"></script>
+		<script src="../p5/addons/p5.sound.min.js"></script>
+
+
+
+		<!-- custom styles -->
+		<style>
+			body {
+				padding: 0;
+				margin: 0;
+			}
+		</style>
+	</head>
+	<body>
+
+		<!-- container to hold our VR scene - make sure to give this element an ID of 'VRScene' -->
+	    <a-scene id="VRScene">
+
+			<a-assets id="VRAssets">
+				<img src="floor.jpg" id="floor">
+				<img src="kitchen7.jpg" id="kitchen">
+				<img src="stove.png" id="stove">
+			</a-assets>
+
+
+
+			</a-scene>
+
+	</body>
+</html>
