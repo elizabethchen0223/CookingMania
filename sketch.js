@@ -13,13 +13,19 @@ var customer_order, current_customer
 var customer_order_list = []
 var customer_hitbox;
 
+// Layout
+var counter
+
+
 function setup() {
 	noCanvas();
 	world = new World('VRScene');
 
+	// Ajust Camera
+	world.setUserPosition(0.15,1.3,5)
 
 
-	//customers
+	//Customers
 	customerx = 3
 	customery = 1
 	customerz = 5
@@ -42,7 +48,7 @@ function setup() {
 	console.log(customer_order);
 
 
-	// // box primitive
+	// box primitive
 	var ingredient_box = new Box({
 		x:0,y:1,z:0,
 		width:1, height: 1, depth: 1,
@@ -81,22 +87,66 @@ function setup() {
 	});
 		world.add(sink_box);
 
+
+	// Counter:
+	counter = new Ring({
+		x:0, y:0.9, z:5,
+		radiusInner: 0.35,
+		radiusOuter: 2,
+		red:200, green: 157, blue:105,
+		rotationX: -90,
+		asset:"wood"
+	})
+	world.add(counter);
+	//Counter walls: 		x,		z,		rotateY
+	var wall1 = new Walls (0,		4.646,	0)
+	var wall2 = new Walls (-0.339,	4.803,	50)
+	var wall3 = new Walls (-0.359,	5.156,	125)
+	var wall4 = new Walls (0,		5.353,	180)
+	var wall5 = new Walls (0.326,	4.803,	-50)
+	var wall6 = new Walls (0.326,	5.156,	-125)
+
+
+	// Floor
 	var _floor = new Plane({
 		x:0, y:0, z:0,
-		width:100, height:100,
+		width:20, height:30,
 		red:120, green:120, blue:120,
 		rotationX:-90, metalness:0.25,
 		asset: "floor",
 		repeatX: 50,
 		repeatY: 50
 	});
-
-	// add the plane to our world
 	world.add(_floor);
+
+
+
+	
 }
 
 function draw() {
 }
+
+
+
+// FUNCTIONS ----------------------------------------------------------------------
+
+
+
+// CLASSES ----------------------------------------------------------------------
+class Walls {
+	constructor(x,z,yrotate){
+		this.wall = new Plane({
+			x:x,y:0.430,z:z,
+			width:0.480, height:0.93,
+			red:168, green: 131, blue:86,
+			rotationY:yrotate,
+			asset:'wood'
+		})
+		world.add(this.wall)
+	}
+}
+
 class Customer{
 
 	constructor(_asset, _mtl, x_align,y_align,z_align,_rotationY,_scale,_name){
