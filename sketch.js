@@ -13,8 +13,7 @@ var customer_order, current_customer
 var customer_order_list = []
 var customer_hitbox;
 
-// Layout
-var counter
+
 
 
 function setup() {
@@ -22,10 +21,10 @@ function setup() {
 	world = new World('VRScene');
 
 	// Ajust Camera
-	world.setUserPosition(0.15,1.3,5)
+	world.setUserPosition(0.15,1.5,5)
 
 
-	//Customers
+	//  ******** CUSTOMERS ********
 	customerx = 3
 	customery = 1
 	customerz = 5
@@ -48,7 +47,6 @@ function setup() {
 	console.log(customer_order);
 
 
-	// box primitive
 	var ingredient_box = new Box({
 		x:0,y:1,z:0,
 		width:1, height: 1, depth: 1,
@@ -88,8 +86,9 @@ function setup() {
 		world.add(sink_box);
 
 
-	// Counter:
-	counter = new Ring({
+
+	//  ******** COUNTER ********
+	var counter = new Ring({
 		x:0, y:0.9, z:5,
 		radiusInner: 0.35,
 		radiusOuter: 2,
@@ -107,7 +106,44 @@ function setup() {
 	var wall6 = new Walls (0.326,	5.156,	-125)
 
 
-	// Floor
+	// SERVING PLATE ---------------
+	// plate
+	var plate = new OBJ({
+		asset: 'dish_obj', mtl: 'dish_mtl',
+		x:0.85, y:0.94, z:5.13,
+		scaleX:1.5, scaleY:1.5, scaleZ:1.5
+	})
+	world.add(plate)
+
+	// mat 
+	var mat = new Plane ({
+		x:0.87, y:0.91, z:5.13,
+		width:0.8, height:1,
+		rotationX:-90, rotationZ:0,
+		asset: "servingMat"
+	})
+	world.add(mat)
+
+	//  ******** APPLIANCES ********
+	// FRIDGE ---------------
+
+
+	//  ******** COOKWARE + UTENSILS ********
+	// CUTTING BOARD ---------------
+	var cuttingBoard = new Box ({
+		x:0, y:0.95, z:4.23,
+		width:1.21, height:0.9, depth:0.03,
+		scaleX:0.5,scaleY:0.5,scaleY:0.5,
+		rotationX: -90,
+		asset:'boardPattern'
+	})
+	world.add(cuttingBoard)
+	
+	// Knife
+
+
+	//  ******** SETTING ********
+	// FLOOR
 	var _floor = new Plane({
 		x:0, y:0, z:0,
 		width:20, height:30,
@@ -119,9 +155,9 @@ function setup() {
 	});
 	world.add(_floor);
 
+	// DECORATIONS
 
 
-	
 }
 
 function draw() {
@@ -145,6 +181,22 @@ class Walls {
 		})
 		world.add(this.wall)
 	}
+}
+
+class Utensils {
+	constructor(_asset,_mtl,x,z,sX,sY,sZ,_rotationX,_rotationY,_rotationZ){
+		this.utensil = new OBJ({
+			asset:_asset,
+			mtl: _mtl,
+			x:x, y:0.93, z:z,
+			scaleX: sX, scaleY:sY, scaleZ: sZ,
+			rotationX:_rotationX,
+			rotationY:_rotationY,
+			rotationZ:_rotationZ
+		})
+		world.add(this.utensil)
+	}
+
 }
 
 class Customer{

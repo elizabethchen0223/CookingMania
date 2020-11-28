@@ -35,6 +35,9 @@
 				<img src="resources/images/kitchen7.jpg" id="kitchen">
 				<img src="resources/images/stove.png" id="stove">
 				<img src="resources/images/wood.png" id="wood">
+				<img src="resources/images/servingMat.jpg" id="servingMat">
+				<img src="resources/images/boardPattern.jpg" id="boardPattern">
+
 
 				<!-- Models -->
 				<a-asset id = "astronaut_mtl" src="resources/models/Astronaut.mtl"></a-asset>
@@ -49,8 +52,13 @@
 				<a-asset id = "puppy_mtl" src="resources/models/puppy.mtl"></a-asset>
 				<a-asset id = "puppy_obj" src="resources/models/puppy.obj"></a-asset>
 
-
+				<!-- Cooking Utensils/appliances -->
+				<!-- <a-asset id="dish" src="resources/models/cooking_utensils/dish/Dish.gltf"></a-assets> -->
+				<a-asset id = "dish_obj" src="resources/models/cooking_utensils/dish/Dish.obj"></a-asset>
+				<a-asset id = "dish_mtl" src="resources/models/cooking_utensils/dish/Dish.mtl"></a-asset>
 			</a-assets>
+
+			<a-entity gltf-model="#dish"></a-entity>
 
 			<!-- Sky -->
 			<a-sky id="theSky" color="rgb(173,216,230)"></a-sky>
