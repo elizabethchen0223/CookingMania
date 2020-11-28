@@ -131,7 +131,7 @@ function setup() {
 	//  ******** COOKWARE + UTENSILS ********
 	// CUTTING BOARD ---------------
 	var cuttingBoard = new Box ({
-		x:0, y:0.95, z:4.23,
+		x:0, y:0.91, z:4.23,
 		width:1.21, height:0.9, depth:0.03,
 		scaleX:0.5,scaleY:0.5,scaleY:0.5,
 		rotationX: -90,
@@ -140,7 +140,10 @@ function setup() {
 	world.add(cuttingBoard)
 	
 	// Knife
+	var knife = new Objects('knife_obj','knife_mtl',0.378, 0.84,4.35,0.0015,0.0015,0.0015,90,90,0)
+	
 
+	// _asset,_mtl,x,z,sX,sY,sZ,_rotationX,_rotationY,_rotationZ
 
 	//  ******** SETTING ********
 	// FLOOR
@@ -183,12 +186,12 @@ class Walls {
 	}
 }
 
-class Utensils {
-	constructor(_asset,_mtl,x,z,sX,sY,sZ,_rotationX,_rotationY,_rotationZ){
+class Objects {
+	constructor(_asset,_mtl,x,y,z,sX,sY,sZ,_rotationX,_rotationY,_rotationZ){
 		this.utensil = new OBJ({
 			asset:_asset,
 			mtl: _mtl,
-			x:x, y:0.93, z:z,
+			x:x, y:y, z:z,
 			scaleX: sX, scaleY:sY, scaleZ: sZ,
 			rotationX:_rotationX,
 			rotationY:_rotationY,
