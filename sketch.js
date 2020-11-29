@@ -21,7 +21,7 @@ function setup() {
 	world = new World('VRScene');
 
 	// Ajust Camera
-	world.setUserPosition(0,1.6,5)
+	world.setUserPosition(0,1.8,5)
 
 
 	//  ******** CUSTOMERS ********
@@ -87,97 +87,108 @@ function setup() {
 
 
 	//  ******** SETTING ********
-	// FLOOR
-	var _floor = new Plane({
-		x:0, y:0, z:0,
-		width:20, height:30,
-		red:120, green:120, blue:120,
-		rotationX:-90, metalness:0.25,
-		asset: "floor",
-		repeatX: 50,
-		repeatY: 50
-	});
-	world.add(_floor);
-	// SKY? SURROUNDING?
+		// FLOOR
+		var _floor = new Plane({
+			x:0, y:0, z:0,
+			width:20, height:30,
+			red:120, green:120, blue:120,
+			rotationX:-90, metalness:0.25,
+			asset: "floor",
+			repeatX: 50,
+			repeatY: 50
+		});
+		// world.add(_floor);
+		// SKY? SURROUNDING?
 
 
 	//  ******** COUNTER ********
-	var counter = new Ring({
-		x:0, y:0.9, z:5,
-		radiusInner: 0.35,
-		radiusOuter: 2,
-		red:200, green: 157, blue:105,
-		rotationX: -90,
-		asset:"wood"
-	})
-	world.add(counter);
-	//Counter walls: 		x,		z,		rotateY
-	var wall1 = new Walls (0,		4.646,	0)
-	var wall2 = new Walls (-0.339,	4.803,	50)
-	var wall3 = new Walls (-0.359,	5.156,	125)
-	var wall4 = new Walls (0,		5.353,	180)
-	var wall5 = new Walls (0.326,	4.803,	-50)
-	var wall6 = new Walls (0.326,	5.156,	-125)
+		var counter = new Ring({
+			x:0, y:0.9, z:5,
+			radiusInner: 0.35,
+			radiusOuter: 2,
+			red:200, green: 157, blue:105,
+			rotationX: -90,
+			asset:"wood"
+		})
+		world.add(counter);
+		//Counter walls: 		x,		z,		rotateY
+		var wall1 = new Walls (0,		4.646,	0)
+		var wall2 = new Walls (-0.339,	4.803,	50)
+		var wall3 = new Walls (-0.359,	5.156,	125)
+		var wall4 = new Walls (0,		5.353,	180)
+		var wall5 = new Walls (0.326,	4.803,	-50)
+		var wall6 = new Walls (0.326,	5.156,	-125)
 
 
-	// SERVING PLATE ---------------
+	// ******** SERVING AREA ********
 	// plate
-	var plate = new OBJ({
-		asset: 'dish_obj', mtl: 'dish_mtl',
-		x:0.85, y:0.94, z:5.13,
-		scaleX:1.5, scaleY:1.5, scaleZ:1.5
-	})
-	world.add(plate)
+		var plate = new OBJ({
+			asset: 'dish_obj', mtl: 'dish_mtl',
+			x:0.85, y:0.94, z:5.13,
+			scaleX:1.5, scaleY:1.5, scaleZ:1.5
+		})
+		world.add(plate)
 
-	// mat 
-	var mat = new Plane ({
-		x:0.87, y:0.91, z:5.13,
-		width:0.8, height:1,
-		rotationX:-90, rotationZ:0,
-		asset: "servingMat"
-	})
-	world.add(mat)
+		// mat 
+		var mat = new Plane ({
+			x:0.87, y:0.91, z:5.13,
+			width:0.8, height:1,
+			rotationX:-90, rotationZ:0,
+			asset: "servingMat"
+		})
+		world.add(mat)
+
+		var blanket = new Plane ({
+			x:-0.92, y:0.91, z:4.13,
+			width:0.8, height:1,
+			rotationX:-90, rotationY:-30,
+			asset: "blanket"
+		})
+		world.add(blanket)
 
 
 	//  ******** APPLIANCES ********
 	// FRIDGE ---------------
+		// fridge (see Fridge Class)
+		var fridgeBox = new Objects('fridge_obj', 'fridge_mtl', 0, 1.27, 5.9, 1,1,1, 0,90,0)
+		var fridgeDoorClosed = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', -0.15, 1.34, 5.74, 1,1,1, 0,220,0)
+		// var fridgeDoorOpen = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', 0.403, 1.34, 5.55, 1,1,1, 0,80,0)
 
 	// ******** COOKING AREA ********
-	var stove = new Box({
-		x:-0.88, y:0.91, z:4.97,
-		width:1, height:0.76, depth:0.03,		
-		rotationX:-90, rotationY:90,
-		asset: "stove"
-	})
-	world.add(stove)
+		var stove = new Box({
+			x:-0.93, y:0.91, z:5.28,
+			width:1, height:0.76, depth:0.03,		
+			rotationX:-90, rotationY:100,
+			asset: "stove"
+		})
+		world.add(stove)
 
-	var pot = new Objects('pot_obj','pot_mtl',-0.86,0.92,4.72,0.01,0.01,0.01,0,250,0)
-	var pan = new Objects('pan_obj','pan_mtl',-0.65,1,5.16,1,1,1,0,270,0)
-	// fridge (see Fridge Class)
-	var fridgeBox = new Objects('fridge_obj', 'fridge_mtl', 0, 1.27, 5.9, 1,1,1, 0,90,0)
-	var fridgeDoorClosed = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', -0.15, 1.34, 5.74, 1,1,1, 0,220,0)
-	// var fridgeDoorOpen = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', 0.403, 1.34, 5.55, 1,1,1, 0,80,0)
-
-
-	//  ******** CUTTING AREA ********
-	var cuttingBoard = new Box ({
-		x:0, y:0.91, z:4.23,
-		width:1.21, height:0.9, depth:0.03,
-		scaleX:0.5,scaleY:0.5,scaleY:0.5,
-		rotationX: -90,
-		asset:'boardPattern'
-	})
-	world.add(cuttingBoard)
+		var pot = new Objects('pot_obj','pot_mtl',-0.95,0.94,5.04,0.008,0.01,0.008,0,300,0)
+		var pan = new Objects('pan_obj','pan_mtl',-0.66,1,5.49,1,1,1,0,270,0)
 	
-	var knife = new Objects('knife_obj','knife_mtl',0.378, 0.84,4.35,0.0015,0.0015,0.0015,90,90,0)
-	
+
+
+	//  ******** PREPARATION AREA ********
+		var cuttingBoard = new Box ({
+			x:0, y:0.91, z:4.23,
+			width:1.21, height:0.9, depth:0.03,
+			scaleX:0.5,scaleY:0.5,scaleY:0.5,
+			rotationX: -90,
+			asset:'boardPattern'
+		})
+		world.add(cuttingBoard)
+		
+		var knife = new Objects('knife_obj','knife_mtl',0.378, 0.84,4.35,0.0015,0.0015,0.0015,90,90,0)
+		var menu_stand = new Objects('menuStand_obj','menuStand_mtl', 0.89,1.1,4.2, 0.34,0.34,0.28, 0,130,0)
+		
 
 	// ******** SPICE SHELF ********
-	// spice shelf
-	var shelf = new Objects('shelf_obj','shelf_mtl',0,0.84,3.64,0.99,0.63,0.72,0,0,0)
-	var ketchup = new Objects('ketchup_obj','ketchup_mtl',-0.51,1,4.17,0.0003,0.0003,0.0003,0,60,0)
-	var trashCan =  new Objects('trashCan_obj','trashCan_mtl',0.34,0.068,4.979,0.001,0.001,0.001,0,0,0)
-	var hotSauce =  new Objects('hotSauce_obj','hotSauce_mtl',-0.22,1.18,3.75,0.3,0.3,0.3,0,180,0)
+		// spice shelf
+		var shelf = new Objects('shelf_obj','shelf_mtl',0,0.84,3.64,0.99,0.63,0.72,0,0,0)
+		var ketchup = new Objects('ketchup_obj','ketchup_mtl',-0.51,1,4.17,0.0003,0.0003,0.0003,0,60,0)
+		var trashCan =  new Objects('trashCan_obj','trashCan_mtl',0.34,0.068,4.979,0.001,0.001,0.001,0,0,0)
+		var hotSauce =  new Objects('hotSauce_obj','hotSauce_mtl',-0.22,1.18,3.75,0.3,0.3,0.3,0,180,0)
+
 
 
 

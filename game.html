@@ -30,13 +30,15 @@
 	    <a-scene id="VRScene">
 
 			<a-assets id="VRAssets">
-				<!-- Mats -->
+				<!-- Images -->
 				<img src="resources/images/floor.jpg" id="floor">
 				<img src="resources/images/kitchen7.jpg" id="kitchen">
 				<img src="resources/images/wood.png" id="wood">
 				<img src="resources/images/servingMat.jpg" id="servingMat">
 				<img src="resources/images/boardPattern.jpg" id="boardPattern">
 				<img src="resources/images/cooktop.jpg" id="stove">
+				<img src="resources/images/blanket.jpg" id="blanket">
+
 
 
 				<!-- Customers -->
@@ -78,7 +80,9 @@
 				
 				<a-asset id = "trashCan_obj" src="resources/models/decorations/trash_can/Trash Can.obj"></a-asset>
 				<a-asset id = "trashCan_mtl" src="resources/models/decorations/trash_can/Trash_Can.mtl"></a-asset>
-
+				
+				<a-asset id = "menuStand_obj" src="resources/models/decorations/menu_stand/model.obj"></a-asset>
+				<a-asset id = "menuStand_mtl" src="resources/models/decorations/menu_stand/materials.mtl"></a-asset>
 
 				<!-- Spice / Sauce -->
 				<a-asset id = "hotSauce_obj" src="resources/models/miscellaneous/hot_sauce/model.obj"></a-asset>
@@ -87,14 +91,17 @@
 				<a-asset id = "ketchup_obj" src="resources/models/miscellaneous/ketchup/Ketchup.obj"></a-asset>
 				<a-asset id = "ketchup_mtl" src="resources/models/miscellaneous/ketchup/Ketchup.mtl"></a-asset>
 
+				
+
+
 
 			</a-assets>
 
-			<a-entity gltf-model="#dish"></a-entity>
 
 			<!-- Sky -->
-			<a-sky id="theSky" color="rgb(173,216,230)"></a-sky>
-			
+			<!-- <a-sky id="theSky" color="rgb(173,216,230)"></a-sky> -->
+			<a-sky id="theSky" src="resources/images/bg.jpg" ></a-sky>
+
 
 			</a-scene>
 
