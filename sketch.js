@@ -21,7 +21,7 @@ function setup() {
 	world = new World('VRScene');
 
 	// Ajust Camera
-	world.setUserPosition(0.15,1.5,5)
+	world.setUserPosition(0,1.6,5)
 
 
 	//  ******** CUSTOMERS ********
@@ -56,7 +56,6 @@ function setup() {
 
 			}
 	});
-	//world.add(ingredient_box);
 	ingredient_box.rotateY(90)
 
 
@@ -73,6 +72,7 @@ function setup() {
 	world.add(stove_box);
 	stove_box.rotateY(90)
 
+
 	var sink_box = new Box({
 		x:5,y:1,z:0,
 		width: 1, height:1,depth:1,
@@ -83,8 +83,22 @@ function setup() {
 
 			}
 	});
-		world.add(sink_box);
+	world.add(sink_box);
 
+
+	//  ******** SETTING ********
+	// FLOOR
+	var _floor = new Plane({
+		x:0, y:0, z:0,
+		width:20, height:30,
+		red:120, green:120, blue:120,
+		rotationX:-90, metalness:0.25,
+		asset: "floor",
+		repeatX: 50,
+		repeatY: 50
+	});
+	world.add(_floor);
+	// SKY? SURROUNDING?
 
 
 	//  ******** COUNTER ********
@@ -124,12 +138,28 @@ function setup() {
 	})
 	world.add(mat)
 
+
 	//  ******** APPLIANCES ********
 	// FRIDGE ---------------
 
+	// ******** COOKING AREA ********
+	var stove = new Box({
+		x:-0.88, y:0.91, z:4.97,
+		width:1, height:0.76, depth:0.03,		
+		rotationX:-90, rotationY:90,
+		asset: "stove"
+	})
+	world.add(stove)
 
-	//  ******** COOKWARE + UTENSILS ********
-	// CUTTING BOARD ---------------
+	var pot = new Objects('pot_obj','pot_mtl',-0.86,0.92,4.72,0.01,0.01,0.01,0,250,0)
+	var pan = new Objects('pan_obj','pan_mtl',-0.65,1,5.16,1,1,1,0,270,0)
+	// fridge (see Fridge Class)
+	var fridgeBox = new Objects('fridge_obj', 'fridge_mtl', 0, 1.27, 5.9, 1,1,1, 0,90,0)
+	var fridgeDoorClosed = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', -0.15, 1.34, 5.74, 1,1,1, 0,220,0)
+	// var fridgeDoorOpen = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', 0.403, 1.34, 5.55, 1,1,1, 0,80,0)
+
+
+	//  ******** CUTTING AREA ********
 	var cuttingBoard = new Box ({
 		x:0, y:0.91, z:4.23,
 		width:1.21, height:0.9, depth:0.03,
@@ -139,26 +169,16 @@ function setup() {
 	})
 	world.add(cuttingBoard)
 	
-	// Knife
 	var knife = new Objects('knife_obj','knife_mtl',0.378, 0.84,4.35,0.0015,0.0015,0.0015,90,90,0)
 	
 
-	// _asset,_mtl,x,z,sX,sY,sZ,_rotationX,_rotationY,_rotationZ
+	// ******** SPICE SHELF ********
+	// spice shelf
+	var shelf = new Objects('shelf_obj','shelf_mtl',0,0.84,3.64,0.99,0.63,0.72,0,0,0)
+	var ketchup = new Objects('ketchup_obj','ketchup_mtl',-0.51,1,4.17,0.0003,0.0003,0.0003,0,60,0)
+	var trashCan =  new Objects('trashCan_obj','trashCan_mtl',0.34,0.068,4.979,0.001,0.001,0.001,0,0,0)
+	var hotSauce =  new Objects('hotSauce_obj','hotSauce_mtl',-0.22,1.18,3.75,0.3,0.3,0.3,0,180,0)
 
-	//  ******** SETTING ********
-	// FLOOR
-	var _floor = new Plane({
-		x:0, y:0, z:0,
-		width:20, height:30,
-		red:120, green:120, blue:120,
-		rotationX:-90, metalness:0.25,
-		asset: "floor",
-		repeatX: 50,
-		repeatY: 50
-	});
-	world.add(_floor);
-
-	// DECORATIONS
 
 
 }
@@ -183,6 +203,46 @@ class Walls {
 			asset:'wood'
 		})
 		world.add(this.wall)
+	}
+}
+
+//***Error: unable to display even though everything works fine if not in a container
+class Fridge {
+	cosntructor(){
+		this.myContainer = new Container3D({
+			x:0, y:1, z:0
+		})
+		
+		this.fridgeBox = new OBJ({
+			asset:'fridge_obj',
+			mtl: 'fridge_mtl',
+			x:0, y:1.27, z:5.9,
+			scaleX: 1, scaleY:1, scaleZ:1,
+			rotationX:0,
+			rotationY:90
+		})
+
+		this.fridgeDoorClosed = new OBJ({
+			asset:'fridgeDoor_obj',
+			mtl: 'fridgeDoor_mtl',
+			x:-0.15, y:1.34, z:5.74,
+			scaleX: 1, scaleY:1, scaleZ:1,
+			rotationX:0,
+			rotationY:220
+		})
+
+		this.fridgeDoorOpen = new OBJ({
+			asset:'fridgeDoor_obj',
+			mtl: 'fridgeDoor_mtl',
+			x:0.403, y:1.34, z:5.55,
+			scaleX: 1, scaleY:1, scaleZ:1,
+			rotationX:0,
+			rotationY:80
+		})
+
+		// this.myContainer.addChild(this.fridgeBox)
+		// this.myContainer.addChild(this.fridgeDoorClosed)
+		// world.add(this.myContainer)
 	}
 }
 
