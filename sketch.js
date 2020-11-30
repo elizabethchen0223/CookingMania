@@ -89,13 +89,14 @@ function setup() {
 	//  ******** SETTING ********
 		// FLOOR
 		var _floor = new Plane({
-			x:0, y:0, z:0,
-			width:20, height:30,
+			x:0, y:0, z:5,
+			width:10, height:10,
 			red:120, green:120, blue:120,
 			rotationX:-90, metalness:0.25,
 			asset: "floor",
-			repeatX: 50,
-			repeatY: 50
+			red:253,green:235, blue:208,
+			repeatX: 10,
+			repeatY: 10
 		});
 		// world.add(_floor);
 		// SKY? SURROUNDING?
@@ -111,6 +112,7 @@ function setup() {
 			asset:"wood"
 		})
 		world.add(counter);
+		// **NOTES: include them into container?
 		//Counter walls: 		x,		z,		rotateY
 		var wall1 = new Walls (0,		4.646,	0)
 		var wall2 = new Walls (-0.339,	4.803,	50)
@@ -134,7 +136,7 @@ function setup() {
 			x:0.87, y:0.91, z:5.13,
 			width:0.8, height:1,
 			rotationX:-90, rotationZ:0,
-			asset: "servingMat"
+			asset: "blanket"
 		})
 		world.add(mat)
 
@@ -148,11 +150,11 @@ function setup() {
 
 
 	//  ******** APPLIANCES ********
-	// FRIDGE ---------------
 		// fridge (see Fridge Class)
 		var fridgeBox = new Objects('fridge_obj', 'fridge_mtl', 0, 1.27, 5.9, 1,1,1, 0,90,0)
-		var fridgeDoorClosed = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', -0.15, 1.34, 5.74, 1,1,1, 0,220,0)
-		// var fridgeDoorOpen = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', 0.403, 1.34, 5.55, 1,1,1, 0,80,0)
+		// var fridgeDoorClosed = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', -0.15, 1.34, 5.74, 1,1,1, 0,220,0)
+		var fridgeDoorOpen = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', 0.403, 1.34, 5.55, 1,1,1, 0,80,0)
+
 
 	// ******** COOKING AREA ********
 		var stove = new Box({
@@ -179,17 +181,59 @@ function setup() {
 		world.add(cuttingBoard)
 		
 		var knife = new Objects('knife_obj','knife_mtl',0.378, 0.84,4.35,0.0015,0.0015,0.0015,90,90,0)
-		var menu_stand = new Objects('menuStand_obj','menuStand_mtl', 0.89,1.1,4.2, 0.34,0.34,0.28, 0,130,0)
 		
+		// menu
+		var recipeContainer = new Container3D({
+		})
+		world.add(recipeContainer)
+		var recipe_stand = new Box({
+			x:0.94,	y:1.08,	z:4.18,
+			width:0.3,	height:0.4,	depth: 0.02,
+			rotationX:30, rotationY:130,
+			asset:'menu_notes',
+			red:255,	green:255,	blue:255
+		})
+		var recipe_text = new Plane({
+			x:0.97, y:1.2, z: 4.17,
+			opacity:0,
+			rotationX:-31, rotationY:-50,
+			transparent:true
+		})
+		recipe_text.tag.setAttribute('text','value: Recipe; color: rgb(0,0,0); align: center;');
+		recipeContainer.addChild(recipe_stand)
+		recipeContainer.addChild(recipe_text)
+
+		// ingrediants 
+		var breadDisplay = new Objects('bread_obj','bread_mtl',		-1.13,1,4.276,	1,1,1,	-80,30,0)
+		var tomatoDisplay = new Objects('tomato_obj','tomato_mtl',	-0.5,1.45,3.64,	0.005,0.005,0.005,	-90,0,0	)
+		var cheeseDisplay = new Box({
+			x:0.072, y:1.387, z:5.97,
+			width:0.07,	height:0.05, depth: 0.13,
+			red:244, green:208, blue:63
+
+		})
+		world.add(cheeseDisplay)
+
+
 
 	// ******** SPICE SHELF ********
 		// spice shelf
 		var shelf = new Objects('shelf_obj','shelf_mtl',0,0.84,3.64,0.99,0.63,0.72,0,0,0)
 		var ketchup = new Objects('ketchup_obj','ketchup_mtl',-0.51,1,4.17,0.0003,0.0003,0.0003,0,60,0)
-		var trashCan =  new Objects('trashCan_obj','trashCan_mtl',0.34,0.068,4.979,0.001,0.001,0.001,0,0,0)
+		var trashCan =  new Objects('trashCan_obj','trashCan_mtl',0.28,0.112,4.979,0.002,0.002,0.002,0,0,0)
 		var hotSauce =  new Objects('hotSauce_obj','hotSauce_mtl',-0.22,1.18,3.75,0.3,0.3,0.3,0,180,0)
 
-
+	
+	
+		// ******** DECORATIONS ********
+		var plant1 = new Objects('plant1_obj','plant1_mtl',		1.26,0.88,4.24,		0.1,0.1,0.1,	0,0,0)
+		var basket1 = new Objects('basket_obj','basket_mtl',	-0.86,1,4.48,		0.5,0.5,0.5,	0,0,0)
+		var basket2 = new Objects('basket_obj','basket_mtl',	-0.72,1,4.27,		0.5,0.5,0.5,	0,0,0)
+		var basket3 = new Objects('basket_obj','basket_mtl',	-0.58,1,4.05,		0.5,0.5,0.5,	0,0,0)
+		// *** below baskets seem to render more computationally expensive, 
+		// *** might consider remove/change them
+		// var basket4 = new Objects('basket2_obj','basket2_mtl',	-1.18,0.89,4.26,	0.0001,0.0001,0.0001,	-90,90,0)
+		// var basket5 = new Objects('basket2_obj','basket2_mtl',	-0.957,0.89,3.81,	0.0001,0.0001,0.0001,	-90,90,0)
 
 
 }
