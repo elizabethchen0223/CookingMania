@@ -1,11 +1,16 @@
 var world
+var camX = 0
+var camY = 1.8
+var camZ = 5
+
+//*************HUD field
 var recipe_container
 var recipe_steak_button,recipe_steak_textholder
 var recipe_noodle_button, recipe_noodle_textholder
 var steak_container, steak_button, steak_textholder
 var noodle_container, noodle_button, noodle_textholder
 
-//customer field
+//***************customer field
 var customers_list = []
 var astronaut, astronaut2, r2d2, puppy;
 var customerx,customerycustomerz;
@@ -13,15 +18,24 @@ var customer_order, current_customer
 var customer_order_list = []
 var customer_hitbox;
 
+//***************Interactable Objects
+var pot
+var knife
 
+//*************action field
+var holdingitem
+var holding_item_name
+var container_holding_item
 
 
 function setup() {
 	noCanvas();
 	world = new World('VRScene');
 
+
+
 	// Ajust Camera
-	world.setUserPosition(0,1.8,5)
+	world.setUserPosition(camX,camY,camZ)
 
 
 	//  ******** CUSTOMERS ********
@@ -47,43 +61,6 @@ function setup() {
 	console.log(customer_order);
 
 
-	var ingredient_box = new Box({
-		x:0,y:1,z:0,
-		width:1, height: 1, depth: 1,
-		red:0, green:255, blue:0,
-		clickFunction: function(me){
-			console.log("Move to ingredient station");
-
-			}
-	});
-	ingredient_box.rotateY(90)
-
-
-	var stove_box = new Box({
-		x:-5,y:1,z:0,
-		width:1, height:1, depth:1,
-		red:255, green:0, blue:0,
-		clickFunction: function(me){
-
-			console.log("Move to stove station");
-
-			}
-	});
-	world.add(stove_box);
-	stove_box.rotateY(90)
-
-
-	var sink_box = new Box({
-		x:5,y:1,z:0,
-		width: 1, height:1,depth:1,
-		red:0, green:0, blue:255,
-		clickFunction: function(me){
-
-			console.log("Move to sink station");
-
-			}
-	});
-	world.add(sink_box);
 
 
 	//  ******** SETTING ********
@@ -129,7 +106,7 @@ function setup() {
 		})
 		world.add(plate)
 
-		// mat 
+		// mat
 		var mat = new Plane ({
 			x:0.87, y:0.91, z:5.13,
 			width:0.8, height:1,
@@ -157,15 +134,15 @@ function setup() {
 	// ******** COOKING AREA ********
 		var stove = new Box({
 			x:-0.93, y:0.91, z:5.28,
-			width:1, height:0.76, depth:0.03,		
+			width:1, height:0.76, depth:0.03,
 			rotationX:-90, rotationY:100,
 			asset: "stove"
 		})
 		world.add(stove)
 
-		var pot = new Objects('pot_obj','pot_mtl',-0.95,0.94,5.04,0.008,0.01,0.008,0,300,0)
-		var pan = new Objects('pan_obj','pan_mtl',-0.66,1,5.49,1,1,1,0,270,0)
-	
+		pot = new Objects('pot_obj','pot_mtl',-0.95,0.94,5.04,0.008,0.01,0.008,0,300,0,"pot")
+		var pan = new Objects('pan_obj','pan_mtl',-0.66,1,5.49,1,1,1,0,270,0,"pan")
+
 
 
 	//  ******** PREPARATION AREA ********
@@ -177,24 +154,43 @@ function setup() {
 			asset:'boardPattern'
 		})
 		world.add(cuttingBoard)
-		
-		var knife = new Objects('knife_obj','knife_mtl',0.378, 0.84,4.35,0.0015,0.0015,0.0015,90,90,0)
-		var menu_stand = new Objects('menuStand_obj','menuStand_mtl', 0.89,1.1,4.2, 0.34,0.34,0.28, 0,130,0)
-		
+
+		knife = new Objects('knife_obj','knife_mtl',0.378, 0.84,4.35,0.0015,0.0015,0.0015,90,90,0,"knife")
+		var menu_stand = new Objects('menuStand_obj','menuStand_mtl', 0.89,1.1,4.2, 0.34,0.34,0.28, 0,130,0,"menu_stand")
+
 
 	// ******** SPICE SHELF ********
 		// spice shelf
-		var shelf = new Objects('shelf_obj','shelf_mtl',0,0.84,3.64,0.99,0.63,0.72,0,0,0)
-		var ketchup = new Objects('ketchup_obj','ketchup_mtl',-0.51,1,4.17,0.0003,0.0003,0.0003,0,60,0)
-		var trashCan =  new Objects('trashCan_obj','trashCan_mtl',0.34,0.068,4.979,0.001,0.001,0.001,0,0,0)
-		var hotSauce =  new Objects('hotSauce_obj','hotSauce_mtl',-0.22,1.18,3.75,0.3,0.3,0.3,0,180,0)
+		var shelf = new Objects('shelf_obj','shelf_mtl',0,0.84,3.64,0.99,0.63,0.72,0,0,0,"shelf")
+		var ketchup = new Objects('ketchup_obj','ketchup_mtl',-0.51,1,4.17,0.0003,0.0003,0.0003,0,60,0,"ketchup")
+		var trashCan =  new Objects('trashCan_obj','trashCan_mtl',0.34,0.068,4.979,0.001,0.001,0.001,0,0,0,"trashcan")
+		var hotSauce =  new Objects('hotSauce_obj','hotSauce_mtl',-0.22,1.18,3.75,0.3,0.3,0.3,0,180,0,"hotsauce")
 
 
+	//Action init
+		//remove the default cursor
+		world.camera.holder.removeChild( world.camera.cursor.tag );
 
+		//default item is knife for now
+		holdingitem = new Objects('knife_obj','knife_mtl',0.378, 0.84,4.35,0.0015,0.0015,0.0015,90,90,0,"knife").utensil
+		holding_item_name = holdingitem.name
+		//set the position and rotation to look natural
+		holdingitem.setPosition(0,-0.2,-0.5)
+		holdingitem.setRotation(0,0,0)
+		holdingitem.rotateY(100)
 
+		//set this as a cursor
+		holdingitem.tag.setAttribute('cursor', 'rayOrigin: mouse');
+
+		world.camera.holder.appendChild(holdingitem.tag);
 }
 
 function draw() {
+	// move the holding item correspondingly, this is only for knife_mtl
+	if(holding_item_name = "knife"){
+		holdingitem.setX(map(mouseX,0,windowWidth,-1,1))
+		holdingitem.setY(map(mouseY,0,windowHeight,-0.5,0.5) * -1)
+	}
 }
 
 
@@ -223,7 +219,7 @@ class Fridge {
 		this.myContainer = new Container3D({
 			x:0, y:1, z:0
 		})
-		
+
 		this.fridgeBox = new OBJ({
 			asset:'fridge_obj',
 			mtl: 'fridge_mtl',
@@ -258,7 +254,8 @@ class Fridge {
 }
 
 class Objects {
-	constructor(_asset,_mtl,x,y,z,sX,sY,sZ,_rotationX,_rotationY,_rotationZ){
+	constructor(_asset,_mtl,x,y,z,sX,sY,sZ,_rotationX,_rotationY,_rotationZ,_name){
+		this.name = _name
 		this.utensil = new OBJ({
 			asset:_asset,
 			mtl: _mtl,
@@ -266,9 +263,32 @@ class Objects {
 			scaleX: sX, scaleY:sY, scaleZ: sZ,
 			rotationX:_rotationX,
 			rotationY:_rotationY,
-			rotationZ:_rotationZ
+			rotationZ:_rotationZ,
+			clickFunction: function(me){
+				console.log(pot.name);
+			}
 		})
 		world.add(this.utensil)
+
+		this.hitbox = new Plane({
+			x: x,
+			y: y,
+			z: z,
+			rotationX: _rotationX,
+			rotationY: _rotationY,
+			rotationZ:_rotationZ,
+			scaleX: sX,
+			scaleY: sY,
+			scaleZ: sZ,
+
+			side:'double',
+			upFunction: function(me){
+
+			}
+		})
+		//world.add(this.hitbox)
+
+
 	}
 
 }
@@ -290,7 +310,7 @@ class Customer{
 			rotationY: _rotationY,
 			scaleX: _scale,
 			scaleY: _scale,
-			scaleZ: _scale,
+			scaleZ: _scale
 		});
 
 		this.hitbox = new Plane({
