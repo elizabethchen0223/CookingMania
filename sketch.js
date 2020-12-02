@@ -30,6 +30,10 @@ var holdingitem	= knife			// item that we are currently holding
 var holding = false		   	// is there an item in our hands?
 var holding_item_name		// item name that we are currently holding
 var container_holding_item
+var clicked = false
+
+// variable for specific tools 
+var knife_clicked = false
 
 // test 
 var selected_items 
@@ -173,6 +177,36 @@ function setup() {
 					// put the selected item in the middle of the cutting board
 					selected_items.setPosition(0,1,4.2)
 					world.add(selected_items)
+
+					let items_on_board = selected_items_name
+
+					// add a hitbox for whatever items on cutting board
+					let hitbox = new Plane ({
+						x: 0,
+						y: 1.1,
+						z: 4.4,
+						rotationX: 0,
+						rotationY: 0,
+						rotationZ:0,
+						scaleX: 0.4,
+						scaleY: 0.4,
+						scaleZ: 0.4,
+
+						red:255,
+						opacity: 0.8,
+						clickFunction: function(theBox){
+							// did user select a knife
+							if(knife_clicked){
+								// swap the asset with sliced product 
+								console.log("You have ",items_on_board)
+								console.log("display a sliced product")
+
+							}
+
+						}
+					})
+
+					world.add(hitbox)
 					console.log("cutting board was clicked!")
 				}
 				console.log("cutting board was clicked!")
@@ -255,7 +289,6 @@ function draw() {
 	// 	console.log(holdingitem)
 
 	// }
-
 
 }
 
@@ -415,11 +448,16 @@ class Interactables {
 						rotationX:_rotationX,
 						rotationY:_rotationY,
 						rotationZ:_rotationZ
-					})	
-					
+					})						
 					
 
 					selected_items_name = _name
+
+					if(selected_items_name == 'knife'){
+						knife_clicked = true
+					}else{
+						knife_clicked = false
+					}
 
 
 				}
