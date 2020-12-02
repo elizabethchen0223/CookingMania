@@ -25,11 +25,19 @@ var knife
 
 //************* Action field
 var interactable_obj = []	// list of items that users can interact with
-var selected_items = []
+// var selected_items = []
 var holdingitem	= knife			// item that we are currently holding
 var holding = false		   	// is there an item in our hands?
 var holding_item_name		// item name that we are currently holding
 var container_holding_item
+
+// test 
+var selected_items 
+var selected_items_name
+
+
+// complete order
+var food_in_plate = []
 
 
 function setup() {
@@ -79,7 +87,6 @@ function setup() {
 			repeatY: 50
 		});
 		// world.add(_floor);
-		// SKY? SURROUNDING?
 
 
 	//  ******** COUNTER ********
@@ -160,22 +167,31 @@ function setup() {
 			rotationX: -90,
 			asset:'boardPattern',
 			clickFunction: function(theBox) {
+
+				// if user has selected sth
+				if(holding){
+					// put the selected item in the middle of the cutting board
+					selected_items.setPosition(0,1,4.2)
+					world.add(selected_items)
+					console.log("cutting board was clicked!")
+				}
 				console.log("cutting board was clicked!")
 			}
 
 		})
 		world.add(cuttingBoard)
 
-		knife = new Objects('knife_obj','knife_mtl',0.378, 0.84,4.35,0.0015,0.0015,0.0015,90,90,0,"knife")
+		knife = new Interactables('knife_obj','knife_mtl',	0.378, 0.84,4.35,	0.0015,0.0015,0.0015,	90,90,0,	0.39, 0.95,4.25,90,0,0,0.4, "knife")
 		var menu_stand = new Objects('menuStand_obj','menuStand_mtl', 0.89,1.1,4.2, 0.34,0.34,0.28, 0,130,0,"menu_stand")
+
 
 
 	// ******** SPICE SHELF ********
 		// spice shelf
 		var shelf = new Objects('shelf_obj','shelf_mtl',0,0.84,3.64,0.99,0.63,0.72,0,0,0,"shelf")
 		var ketchup = new Objects('ketchup_obj','ketchup_mtl',-0.51,1,4.17,0.0003,0.0003,0.0003,0,60,0,"ketchup")
-		var trashCan =  new Objects('trashCan_obj','trashCan_mtl',0.34,0.068,4.979,0.001,0.001,0.001,0,0,0,"trashcan")
-		var hotSauce =  new Objects('hotSauce_obj','hotSauce_mtl',-0.22,1.18,3.75,0.3,0.3,0.3,0,180,0,"hotsauce")
+		var trashCan =  new Objects('trashCan_obj','trashCan_mtl',0.28,0.112,4.979,0.002,0.002,0.002,0,0,0,"trashCan")
+		var hotSauce =  new Objects('hotSauce_obj','hotSauce_mtl',-0.22,1.18,3.75,0.3,0.3,0.3,0,180,0,"hotSauce")
 
 		// ingrediants 
 		var bread= new Objects('bread_obj','bread_mtl',		-1.13,1,4.276,	1,1,1,	-80,30,0,	"bread")
@@ -190,17 +206,6 @@ function setup() {
 			}
 		})
 		world.add(cheese)
-
-
-
-	// ******** SPICE SHELF ********
-		// spice shelf
-		var shelf = new Objects('shelf_obj','shelf_mtl',0,0.84,3.64,0.99,0.63,0.72,0,0,0,"shelf")
-		var ketchup = new Objects('ketchup_obj','ketchup_mtl',-0.51,1,4.17,0.0003,0.0003,0.0003,0,60,0,"ketchup")
-		var trashCan =  new Objects('trashCan_obj','trashCan_mtl',0.28,0.112,4.979,0.002,0.002,0.002,0,0,0,"trashCan")
-		var hotSauce =  new Objects('hotSauce_obj','hotSauce_mtl',-0.22,1.18,3.75,0.3,0.3,0.3,0,180,0,"hotSauce")
-
-	
 	
 		// ******** DECORATIONS ********
 		var plant1 = new Objects('plant1_obj','plant1_mtl',		1.26,0.88,4.24,		0.1,0.1,0.1,	0,0,0)
@@ -224,30 +229,33 @@ function setup() {
 			world.camera.holder.removeChild( world.camera.cursor.tag );
 
 		//default item is knife for now
-		holdingitem = new Objects('knife_obj','knife_mtl',0.378, 0.84,4.35,0.0015,0.0015,0.0015,90,90,0,"knife").utensil
-		holding_item_name = holdingitem.name
-		//set the position and rotation to look natural
-		holdingitem.setPosition(0,-0.2,-0.5)
-		holdingitem.setRotation(0,0,0)
-		holdingitem.rotateY(100)
+			holdingitem = new Objects('knife_obj','knife_mtl',0.378, 0.84,4.35,0.0015,0.0015,0.0015,90,90,0,"knife").utensil
+			holding_item_name = holdingitem.name
+			//set the position and rotation to look natural
+			holdingitem.setPosition(0,-0.2,-0.5)
+			holdingitem.setRotation(0,0,0)
+			holdingitem.rotateY(100)
 
-		//set this as a cursor
-		holdingitem.tag.setAttribute('cursor', 'rayOrigin: mouse');
+			//set this as a cursor
+			holdingitem.tag.setAttribute('cursor', 'rayOrigin: mouse');
 
-		world.camera.holder.appendChild(holdingitem.tag);
+			world.camera.holder.appendChild(holdingitem.tag);
 	}
 }
 
+
+
 function draw() {
 	// move the holding item correspondingly, this is only for knife_mtl
-	if(holding_item_name = "knife"){
-		holdingitem.setX(map(mouseX,0,windowWidth,-1,1))
-		holdingitem.setY(map(mouseY,0,windowHeight,-0.5,0.5) * -1)
-	}
+	// if(holding_item_name = "knife"){
+	// 	holdingitem.setX(map(mouseX,0,windowWidth,-1,1))
+	// 	holdingitem.setY(map(mouseY,0,windowHeight,-0.5,0.5) * -1)
+	// }
 	// else if(holding == false){
 	// 	console.log(holdingitem)
 
 	// }
+
 
 }
 
@@ -392,15 +400,15 @@ class Interactables {
 			side:'double',
 
 			clickFunction: function(theBox){
+			
 				// the user has seleted an item
-				
 				if(holding == false){
 					holding = true
 
 					// update holding item
 						// unable to refer to the obejct directly via this.utensil
 						// therefore have to create another obj 
-					holdingitem = new OBJ({asset:_asset,
+					selected_items = new OBJ({asset:_asset,
 						mtl: _mtl,
 						x:x, y:y, z:z,
 						scaleX: sX, scaleY:sY, scaleZ: sZ,
@@ -408,12 +416,11 @@ class Interactables {
 						rotationY:_rotationY,
 						rotationZ:_rotationZ
 					})	
-					// holdingitem.show()
+					
+					
 
+					selected_items_name = _name
 
-					holding_item_name = _name
-
-					// selected_items.push(holding_item_name)
 
 				}
 				// if user would like to put back the item 
@@ -421,22 +428,50 @@ class Interactables {
 					holding = false
 					// holdingitem.hide()
 					
-					holding_item_name = ''
+					// holding_item_name = ''
 				}
+				// world.add(checkmark)
+
 				// holdingitem.toggleVisibility()
 				
 				console.log(holding)
 
-				console.log(holding_item_name + " was clicked!")
-				console.log(holdingitem)
+				console.log(selected_items_name + " was clicked!")
 				// console.log(selected_items)
 
 			}
 		})
 		
 		this.container.add(this.hitbox)
+
+
+		this.checkmark = new Plane({
+			x: hitboxX,
+			y: hitboxY,
+			z: hitboxZ,
+			rotationX: hitRotationX,
+			rotationY: hitRotationY,
+			rotationZ:hitRotationZ,
+			scaleX: hitBozScale,
+			scaleY: hitBozScale,
+			scaleZ: hitBozScale,
+			transparent: true,
+			asset:'selected'
+		})
+		// this.container.add(this.checkmark)
+
+
 		world.add(this.container)
+
+
 	}
+
+	checkmark(){
+		
+
+	}
+
+
 }
 
 class Customer{
