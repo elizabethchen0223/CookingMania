@@ -22,9 +22,13 @@ var customer_hitbox;
 var pot
 var knife
 
-//*************action field
-var holdingitem
-var holding_item_name
+
+//************* Action field
+var interactable_obj = []	// list of items that users can interact with
+var selected_items = []
+var holdingitem	= knife			// item that we are currently holding
+var holding = false		   	// is there an item in our hands?
+var holding_item_name		// item name that we are currently holding
 var container_holding_item
 
 
@@ -98,7 +102,7 @@ function setup() {
 
 
 	// ******** SERVING AREA ********
-	// plate
+		// plate: interactable
 		var plate = new OBJ({
 			asset: 'dish_obj', mtl: 'dish_mtl',
 			x:0.85, y:0.94, z:5.13,
@@ -126,7 +130,7 @@ function setup() {
 
 	//  ******** APPLIANCES ********
 	// FRIDGE ---------------
-		// fridge (see Fridge Class)
+		// fridge (see Fridge Class) : interactable
 		var fridgeBox = new Objects('fridge_obj', 'fridge_mtl', 0, 1.27, 5.9, 1,1,1, 0,90,0)
 		var fridgeDoorClosed = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', -0.15, 1.34, 5.74, 1,1,1, 0,220,0)
 		// var fridgeDoorOpen = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', 0.403, 1.34, 5.55, 1,1,1, 0,80,0)
@@ -136,7 +140,10 @@ function setup() {
 			x:-0.93, y:0.91, z:5.28,
 			width:1, height:0.76, depth:0.03,
 			rotationX:-90, rotationY:100,
-			asset: "stove"
+			asset: "stove",
+			clickFunction: function(theBox) {
+				console.log("stove was clicked!")
+			}
 		})
 		world.add(stove)
 
@@ -145,12 +152,17 @@ function setup() {
 
 
 	//  ******** PREPARATION AREA ********
+		// cutting board: interactable
 		var cuttingBoard = new Box ({
 			x:0, y:0.91, z:4.23,
 			width:1.21, height:0.9, depth:0.03,
 			scaleX:0.5,scaleY:0.5,scaleY:0.5,
 			rotationX: -90,
-			asset:'boardPattern'
+			asset:'boardPattern',
+			clickFunction: function(theBox) {
+				console.log("cutting board was clicked!")
+			}
+
 		})
 		world.add(cuttingBoard)
 
@@ -166,15 +178,18 @@ function setup() {
 		var hotSauce =  new Objects('hotSauce_obj','hotSauce_mtl',-0.22,1.18,3.75,0.3,0.3,0.3,0,180,0,"hotsauce")
 
 		// ingrediants 
-		var breadDisplay = new Objects('bread_obj','bread_mtl',		-1.13,1,4.276,	1,1,1,	-80,30,0,	"breadDisplay")
-		var tomatoDisplay = new Objects('tomato_obj','tomato_mtl',	-0.5,1.45,3.64,	0.005,0.005,0.005,	-90,0,0,	"tomatoDisplay")
-		var cheeseDisplay = new Box({
+		var bread= new Objects('bread_obj','bread_mtl',		-1.13,1,4.276,	1,1,1,	-80,30,0,	"bread")
+		// 	_asset,		_mtl,			x,	y,	z,		sX,sY,sZ,_rotationX,_rotationY,_rotationZ,	hitboxX,hitboxY,hitboxZ, hitRotationX, hitRotationY, hitRotationZ, hitBozScale,_name
+		var tomato= new Interactables('tomato_obj','tomato_mtl',	-0.5,1.45,3.64,	0.005,0.005,0.005,	-90,0,0,  -0.5,1.47,3.78,0,0,0,0.3,	"tomato")
+		var cheese = new Box({
 			x:0.072, y:1.387, z:5.97,
 			width:0.07,	height:0.05, depth: 0.13,
-			red:244, green:208, blue:63
-
+			red:244, green:208, blue:63,
+			clickFunction: function(theBox) {
+				console.log("cheese was clicked!")
+			}
 		})
-		world.add(cheeseDisplay)
+		world.add(cheese)
 
 
 
@@ -197,11 +212,16 @@ function setup() {
 		// var basket4 = new Objects('basket2_obj','basket2_mtl',	-1.18,0.89,4.26,	0.0001,0.0001,0.0001,	-90,90,0)
 		// var basket5 = new Objects('basket2_obj','basket2_mtl',	-0.957,0.89,3.81,	0.0001,0.0001,0.0001,	-90,90,0)
 
+
+	
 		
 
-	//Action init
-		//remove the default cursor
-		world.camera.holder.removeChild( world.camera.cursor.tag );
+	//Action init: Select Tools
+
+		// did the user click on an item's hitbox??
+		if(holding){
+			//remove the default cursor
+			world.camera.holder.removeChild( world.camera.cursor.tag );
 
 		//default item is knife for now
 		holdingitem = new Objects('knife_obj','knife_mtl',0.378, 0.84,4.35,0.0015,0.0015,0.0015,90,90,0,"knife").utensil
@@ -215,6 +235,7 @@ function setup() {
 		holdingitem.tag.setAttribute('cursor', 'rayOrigin: mouse');
 
 		world.camera.holder.appendChild(holdingitem.tag);
+	}
 }
 
 function draw() {
@@ -223,6 +244,11 @@ function draw() {
 		holdingitem.setX(map(mouseX,0,windowWidth,-1,1))
 		holdingitem.setY(map(mouseY,0,windowHeight,-0.5,0.5) * -1)
 	}
+	// else if(holding == false){
+	// 	console.log(holdingitem)
+
+	// }
+
 }
 
 
@@ -285,8 +311,10 @@ class Fridge {
 	}
 }
 
+// display statioanry objects
 class Objects {
 	constructor(_asset,_mtl,x,y,z,sX,sY,sZ,_rotationX,_rotationY,_rotationZ,_name){
+
 		this.name = _name
 		this.utensil = new OBJ({
 			asset:_asset,
@@ -302,27 +330,113 @@ class Objects {
 		})
 		world.add(this.utensil)
 
-		this.hitbox = new Plane({
-			x: x,
-			y: y,
-			z: z,
-			rotationX: _rotationX,
-			rotationY: _rotationY,
-			rotationZ:_rotationZ,
-			scaleX: sX,
-			scaleY: sY,
-			scaleZ: sZ,
+		// this.hitbox = new Plane({
+		// 	x: x,
+		// 	y: y,
+		// 	z: z,
+		// 	rotationX: _rotationX,
+		// 	rotationY: _rotationY,
+		// 	rotationZ:_rotationZ,
+		// 	scaleX: sX,
+		// 	scaleY: sY,
+		// 	scaleZ: sZ,
+		// 	red:255,
+		// 	opacity: 0.8,
 
-			side:'double',
-			upFunction: function(me){
+		// 	side:'double',
+		// 	upFunction: function(me){
 
-			}
-		})
-		//world.add(this.hitbox)
+		// 	}
+		// })
+		// world.add(this.hitbox)
 
 
 	}
 
+}
+
+// interactable objs
+class Interactables {
+	constructor(_asset,_mtl,x,y,z,sX,sY,sZ,_rotationX,_rotationY,_rotationZ,hitboxX,hitboxY,hitboxZ, hitRotationX, hitRotationY, hitRotationZ, hitBozScale,_name){
+		this.container = new Container3D({
+			// blank
+		})
+
+		this.name = _name
+
+		this.utensil = new OBJ({
+			asset:_asset,
+			mtl: _mtl,
+			x:x, y:y, z:z,
+			scaleX: sX, scaleY:sY, scaleZ: sZ,
+			rotationX:_rotationX,
+			rotationY:_rotationY,
+			rotationZ:_rotationZ
+		})
+		this.container.add(this.utensil)
+
+		this.hitbox = new Plane({
+			x: hitboxX,
+			y: hitboxY,
+			z: hitboxZ,
+			rotationX: hitRotationX,
+			rotationY: hitRotationY,
+			rotationZ:hitRotationZ,
+			scaleX: hitBozScale,
+			scaleY: hitBozScale,
+			scaleZ: hitBozScale,
+
+			red:255,
+			opacity: 0.8,
+
+			side:'double',
+
+			clickFunction: function(theBox){
+				// the user has seleted an item
+				
+				if(holding == false){
+					holding = true
+
+					// update holding item
+						// unable to refer to the obejct directly via this.utensil
+						// therefore have to create another obj 
+					holdingitem = new OBJ({asset:_asset,
+						mtl: _mtl,
+						x:x, y:y, z:z,
+						scaleX: sX, scaleY:sY, scaleZ: sZ,
+						rotationX:_rotationX,
+						rotationY:_rotationY,
+						rotationZ:_rotationZ
+					})	
+					// holdingitem.show()
+
+
+					holding_item_name = _name
+
+					// selected_items.push(holding_item_name)
+
+				}
+				// if user would like to put back the item 
+				else {
+					holding = false
+					// holdingitem.hide()
+					
+					holding_item_name = ''
+				}
+				// holdingitem.toggleVisibility()
+				
+				console.log(holding)
+
+				console.log(holding_item_name + " was clicked!")
+				console.log(holdingitem)
+				// console.log(selected_items)
+
+			}
+		})
+		
+		this.container.add(this.hitbox)
+		world.add(this.container)
+	}
 }
 
 class Customer{
