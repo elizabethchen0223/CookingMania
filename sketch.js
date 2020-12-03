@@ -10,6 +10,9 @@ var recipe_noodle_button, recipe_noodle_textholder
 var steak_container, steak_button, steak_textholder
 var noodle_container, noodle_button, noodle_textholder
 
+var clearSelectionBtn, selectionUI
+var clearSelection = false
+
 //***************customer field
 var customers_list = []
 var astronaut, astronaut2, r2d2, puppy;
@@ -18,9 +21,13 @@ var customer_order, current_customer
 var customer_order_list = []
 var customer_hitbox;
 
-//***************Interactable Objects
+//*************** Interactable Objects 1
 var pot
 var knife
+
+//*************** Interactable Objects 2
+
+//*************** Decorative Objects
 
 
 //************* Action field
@@ -30,7 +37,7 @@ var holdingitem	= knife			// item that we are currently holding
 var holding = false		   	// is there an item in our hands?
 var holding_item_name		// item name that we are currently holding
 var container_holding_item
-var clicked = false
+var clicked = false			
 
 // variable for specific tools 
 var knife_clicked = false
@@ -40,6 +47,7 @@ var selected_items
 var selected_items_name
 
 
+
 // complete order
 var food_in_plate = []
 
@@ -47,8 +55,6 @@ var food_in_plate = []
 function setup() {
 	noCanvas();
 	world = new World('VRScene');
-
-
 
 	// Ajust Camera
 	world.setUserPosition(camX,camY,camZ)
@@ -173,49 +179,73 @@ function setup() {
 			clickFunction: function(theBox) {
 
 				// if user has selected sth
-				if(holding){
-					// put the selected item in the middle of the cutting board
-					selected_items.setPosition(0,1,4.2)
-					world.add(selected_items)
+				// if(holding){
+				// 	// put the selected item in the middle of the cutting board
+				// 	selected_items.setPosition(0,1,4.2)
+				// 	world.add(selected_items)
 
-					let items_on_board = selected_items_name
+				// 	let items_on_board = selected_items_name
 
-					// add a hitbox for whatever items on cutting board
-					let hitbox = new Plane ({
-						x: 0,
-						y: 1.1,
-						z: 4.4,
-						rotationX: 0,
-						rotationY: 0,
-						rotationZ:0,
-						scaleX: 0.4,
-						scaleY: 0.4,
-						scaleZ: 0.4,
+				// 	// add a hitbox for whatever items on cutting board
+				// 	let hitbox = new Plane ({
+				// 		x: 0,
+				// 		y: 1.1,
+				// 		z: 4.4,
+				// 		rotationX: 0,
+				// 		rotationY: 0,
+				// 		rotationZ:0,
+				// 		scaleX: 0.4,
+				// 		scaleY: 0.4,
+				// 		scaleZ: 0.4,
 
-						red:255,
-						opacity: 0.8,
-						clickFunction: function(theBox){
-							// did user select a knife
-							if(knife_clicked){
-								// swap the asset with sliced product 
-								console.log("You have ",items_on_board)
-								console.log("display a sliced product")
+				// 		red:255,
+				// 		opacity: 0.8,
+				// 		clickFunction: function(theBox){
+				// 			// did user select a knife
+				// 			if(knife_clicked){
+				// 				// swap the asset with sliced product 
+				// 				console.log("You have ",items_on_board)
+				// 				console.log("display a sliced product")
 
-							}
+				// 			}
 
-						}
-					})
+				// 		}
+				// 	})
 
-					world.add(hitbox)
-					console.log("cutting board was clicked!")
-				}
-				console.log("cutting board was clicked!")
+				// 	world.add(hitbox)
+				// 	console.log("cutting board was clicked!")
+				// }
+				// console.log("cutting board was clicked!")
 			}
 
 		})
-		world.add(cuttingBoard)
 
-		knife = new Interactables('knife_obj','knife_mtl',	0.378, 0.84,4.35,	0.0015,0.0015,0.0015,	90,90,0,	0.39, 0.95,4.25,90,0,0,0.4, "knife")
+		var cuttingBoardBox = new Box({
+			x:0, y:1.04, z:4.27,
+			width:0.54, height:0.4, depth:0.21,
+			scaleX:0.5,scaleY:0.5,scaleY:0.5,
+			opacity: 0.8,
+			clickFunction: function(theBox){
+				
+				if(holding){
+					// put the selected item in the box
+					selected_items.setPosition(theBox.x,theBox.y,theBox.z)
+
+					let items_on_board = selected_items_name
+
+					console.log("cutting board was clicked!")
+					console.log(selected_items + ' was selected!')
+				}
+
+			}
+		
+		})
+
+		world.add(cuttingBoard)
+		world.add(cuttingBoardBox)
+
+
+		knife = new Interactables('knife_obj','knife_mtl',	0.378, 0.84,4.35,	0.0015,0.0015,0.0015,	90,90,0,	0.36, "knife")
 		var menu_stand = new Objects('menuStand_obj','menuStand_mtl', 0.89,1.1,4.2, 0.34,0.34,0.28, 0,130,0,"menu_stand")
 
 
@@ -229,8 +259,8 @@ function setup() {
 
 		// ingrediants 
 		var bread= new Objects('bread_obj','bread_mtl',		-1.13,1,4.276,	1,1,1,	-80,30,0,	"bread")
-		// 	_asset,		_mtl,			x,	y,	z,		sX,sY,sZ,_rotationX,_rotationY,_rotationZ,	hitboxX,hitboxY,hitboxZ, hitRotationX, hitRotationY, hitRotationZ, hitBozScale,_name
-		var tomato= new Interactables('tomato_obj','tomato_mtl',	-0.5,1.45,3.64,	0.005,0.005,0.005,	-90,0,0,  -0.5,1.47,3.78,0,0,0,0.3,	"tomato")
+		// 	_asset,		_mtl,			x,	y,	z,		sX,sY,sZ,_rotationX,_rotationY,_rotationZ,			hitBozScale,_name
+		var tomato= new Interactables('tomato_obj','tomato_mtl',	-0.5,1.45,3.64,	0.005,0.005,0.005,	-90,0,0, 0.3,	"tomato")
 		var cheese = new Box({
 			x:0.072, y:1.387, z:5.97,
 			width:0.07,	height:0.05, depth: 0.13,
@@ -246,35 +276,71 @@ function setup() {
 		var basket1 = new Objects('basket_obj','basket_mtl',	-0.86,1,4.48,		0.5,0.5,0.5,	0,0,0)
 		var basket2 = new Objects('basket_obj','basket_mtl',	-0.72,1,4.27,		0.5,0.5,0.5,	0,0,0)
 		var basket3 = new Objects('basket_obj','basket_mtl',	-0.58,1,4.05,		0.5,0.5,0.5,	0,0,0)
-		// *** below baskets seem to be too computationally expensive, 
-		// *** might consider remove/change them
-		// var basket4 = new Objects('basket2_obj','basket2_mtl',	-1.18,0.89,4.26,	0.0001,0.0001,0.0001,	-90,90,0)
-		// var basket5 = new Objects('basket2_obj','basket2_mtl',	-0.957,0.89,3.81,	0.0001,0.0001,0.0001,	-90,90,0)
+			// *** below baskets seem to be too computationally expensive, 
+			// *** might consider remove/change them
+			// var basket4 = new Objects('basket2_obj','basket2_mtl',	-1.18,0.89,4.26,	0.0001,0.0001,0.0001,	-90,90,0)
+			// var basket5 = new Objects('basket2_obj','basket2_mtl',	-0.957,0.89,3.81,	0.0001,0.0001,0.0001,	-90,90,0)
 
 
 	
+		
 		
 
 	//Action init: Select Tools
 
 		// did the user click on an item's hitbox??
-		if(holding){
-			//remove the default cursor
+		// if(holding){
+		// 	//remove the default cursor
 			world.camera.holder.removeChild( world.camera.cursor.tag );
 
-		//default item is knife for now
-			holdingitem = new Objects('knife_obj','knife_mtl',0.378, 0.84,4.35,0.0015,0.0015,0.0015,90,90,0,"knife").utensil
-			holding_item_name = holdingitem.name
-			//set the position and rotation to look natural
-			holdingitem.setPosition(0,-0.2,-0.5)
-			holdingitem.setRotation(0,0,0)
-			holdingitem.rotateY(100)
+		// //default item is knife for now
+		// 	holdingitem = new Objects('knife_obj','knife_mtl',0.378, 0.84,4.35,0.0015,0.0015,0.0015,90,90,0,"knife").utensil
+		// 	holding_item_name = holdingitem.name
+		// 	//set the position and rotation to look natural
+		// 	holdingitem.setPosition(0,-0.2,-0.5)
+		// 	holdingitem.setRotation(0,0,0)
+		// 	holdingitem.rotateY(100)
 
-			//set this as a cursor
-			holdingitem.tag.setAttribute('cursor', 'rayOrigin: mouse');
+		// 	//set this as a cursor
+		// 	holdingitem.tag.setAttribute('cursor', 'rayOrigin: mouse');
 
-			world.camera.holder.appendChild(holdingitem.tag);
-	}
+		// 	world.camera.holder.appendChild(holdingitem.tag);
+		// }
+
+	
+	// ****************************** UI ******************************
+		// clear selection button
+		clearSelectionBtn = new Plane({
+			x:0.6, y:0.5, z:-1,
+			red:185,green:190,blue:195, opacity: 0.8,
+			width:0.5, height:0.1,
+			clickFunction: function(thePlane){
+				console.log("Clear Selection!")
+				clearSelection = true
+				selected_items = undefined
+				selected_items_name = undefined
+			}
+		})
+		clearSelectionBtn.tag.setAttribute('text','value: Clear Selection ; color: rgb(0,0,0); align:center; height: 1; width:1;')
+
+
+		// show user's current selection 
+		 selectionUI = new Plane ({
+			x:-0.6, y:0.5, z:-1,
+			red:185,green:190,blue:195, opacity: 0.8,
+			width:0.8, height:0.1
+		})
+		selectionUI.tag.setAttribute('text','value: You have not selected anything; color: rgb(0,0,0); align:center; height: 1; width:1;')
+
+
+		// add Btns to the HUD
+		selectionUI.tag.setAttribute('cursor','rayOrigin: mouse')		
+		world.camera.holder.appendChild(selectionUI.tag);
+		world.camera.holder.appendChild(clearSelectionBtn.tag);
+
+
+
+
 }
 
 
@@ -289,13 +355,24 @@ function draw() {
 	// 	console.log(holdingitem)
 
 	// }
+	// update selection
+
+	if(selected_items_name == undefined ){
+		selectionUI.tag.setAttribute('text','value: You have not selected anything; color: rgb(0,0,0); align:center; height: 1; width:1;')
+	}else{
+		selectionUI.tag.setAttribute('text','value: You selected : '+ selected_items_name + ';  color: rgb(0,0,0); align:center; height: 1; width:1;')
+	}
+
 
 }
 
 
 
 // FUNCTIONS ----------------------------------------------------------------------
-
+function clearSelection(){
+	selected_items = ''
+	selected_items_name = ''
+}
 
 
 // CLASSES ----------------------------------------------------------------------
@@ -398,7 +475,7 @@ class Objects {
 
 // interactable objs
 class Interactables {
-	constructor(_asset,_mtl,x,y,z,sX,sY,sZ,_rotationX,_rotationY,_rotationZ,hitboxX,hitboxY,hitboxZ, hitRotationX, hitRotationY, hitRotationZ, hitBozScale,_name){
+	constructor(_asset,_mtl,x,y,z,sX,sY,sZ,_rotationX,_rotationY,_rotationZ,hitBozScale,_name){
 		this.container = new Container3D({
 			// blank
 		})
@@ -416,13 +493,10 @@ class Interactables {
 		})
 		this.container.add(this.utensil)
 
-		this.hitbox = new Plane({
-			x: hitboxX,
-			y: hitboxY,
-			z: hitboxZ,
-			rotationX: hitRotationX,
-			rotationY: hitRotationY,
-			rotationZ:hitRotationZ,
+		this.hitbox = new Box({
+			x: x,
+			y: y,
+			z: z,
 			scaleX: hitBozScale,
 			scaleY: hitBozScale,
 			scaleZ: hitBozScale,
@@ -430,12 +504,11 @@ class Interactables {
 			red:255,
 			opacity: 0.8,
 
-			side:'double',
 
 			clickFunction: function(theBox){
 			
 				// the user has seleted an item
-				if(holding == false){
+				// if(holding == false){
 					holding = true
 
 					// update holding item
@@ -450,6 +523,8 @@ class Interactables {
 						rotationZ:_rotationZ
 					})						
 					
+					world.add(selected_items)
+
 
 					selected_items_name = _name
 
@@ -460,19 +535,20 @@ class Interactables {
 					}
 
 
-				}
+				
 				// if user would like to put back the item 
-				else {
-					holding = false
+				// else {
+				// 	holding = false
 					// holdingitem.hide()
 					
 					// holding_item_name = ''
-				}
+				// }
 				// world.add(checkmark)
 
 				// holdingitem.toggleVisibility()
 				
 				console.log(holding)
+				console.log(selected_items)
 
 				console.log(selected_items_name + " was clicked!")
 				// console.log(selected_items)
@@ -483,19 +559,19 @@ class Interactables {
 		this.container.add(this.hitbox)
 
 
-		this.checkmark = new Plane({
-			x: hitboxX,
-			y: hitboxY,
-			z: hitboxZ,
-			rotationX: hitRotationX,
-			rotationY: hitRotationY,
-			rotationZ:hitRotationZ,
-			scaleX: hitBozScale,
-			scaleY: hitBozScale,
-			scaleZ: hitBozScale,
-			transparent: true,
-			asset:'selected'
-		})
+		// this.checkmark = new Plane({
+		// 	x: hitboxX,
+		// 	y: hitboxY,
+		// 	z: hitboxZ,
+		// 	rotationX: hitRotationX,
+		// 	rotationY: hitRotationY,
+		// 	rotationZ:hitRotationZ,
+		// 	scaleX: hitBozScale,
+		// 	scaleY: hitBozScale,
+		// 	scaleZ: hitBozScale,
+		// 	transparent: true,
+		// 	asset:'selected'
+		// })
 		// this.container.add(this.checkmark)
 
 
