@@ -52,7 +52,7 @@ var knife_clicked = false
 // test 
 var selected_items 
 var selected_items_name
-var save_items
+var save_items, save_items_name
 
 
 
@@ -230,16 +230,37 @@ function setup() {
 			scaleX:0.5,scaleY:0.5,scaleY:0.5,
 			opacity: 0.8,
 			clickFunction: function(theBox){
-
+				// if use has selected an item
 				if(selected_items != undefined){
-					// put the selected item in the box
+					// put the saved selected item in the box
+					if(knife_clicked == false){
+						save_items.setPosition(theBox.x,theBox.y,theBox.z)
+					}else{
+						// iniate the animation of cutting
+						// knife.utensil.hide()
+						// selected_items.rotateX(0)
+						// selected_items.setPosition(0.08,1,4.4)
 
-
-					selected_items.setPosition(theBox.x,theBox.y,theBox.z)
-					console.log("Item on board" + save_items)
+						// show finished produce
+						if(save_items_name == "tomato"){
+							save_items.hide()
+							save_items = new Objects('tomatoSlice_obj', 'tomatoSlice_mtl', -0.05,0.93,4.25, 0.15,0.15,0.15,	0,0,0, "tomato slice")
+							save_items_name = save_items.name
+							// world.add(save_items)
+							save_items.show()
+						}
+						
+					}
 
 				}else {
-					console.log("Item on board" + save_items)
+					// if knife is selected
+					// check to see if there is item on the cutting board
+					if(save_items != undefined){
+						// if so, selected item become the previously saved item
+						selected_items = save_items
+						selected_items_name = save_items_name 
+					}
+					// console.log("Item on board" + save_items)
 				}
 
 					// selected_items.setPosition(theBox.x,theBox.y,theBox.z)
@@ -248,10 +269,8 @@ function setup() {
 					// console.log(items_on_board + ' was selected!')
 				
 
-				console.log("cutting board was clicked!")
-				// console.log("the item on board is..." + items_on_board)
-
-
+				// console.log("cutting board was clicked!")
+				console.log("the item on board is..." + selected_items_name)
 
 			}
 		
@@ -276,6 +295,8 @@ function setup() {
 		// ingrediants 
 		bread= new Objects('bread_obj','bread_mtl',		-1.13,1,4.276,	1,1,1,	-80,30,0,	"bread")
 		tomato= new Interactables('tomato_obj','tomato_mtl',	-0.5,1.45,3.64,	0.005,0.005,0.005,	-90,0,0, 0.3,0.3,0.3,	"tomato")
+		// tomato_slice = new Objects('tomatoSlice_obj', 'tomatoSlice_mtl', -0.05,0.93,4.25, 0.15,0.15,0.15,	0,0,0)
+		// tomato_slice.utensil.hide()
 		cheese = new Box({
 			x:0.072, y:1.387, z:5.97,
 			width:0.07,	height:0.05, depth: 0.13,
@@ -286,7 +307,7 @@ function setup() {
 		})
 		world.add(cheese)
 
-		ingrediants.push(bread, tomato, cheese)
+		ingrediants.push('bread', 'tomato', 'cheese')
 	
 
 	// ******** DECORATIONS ********
@@ -300,8 +321,8 @@ function setup() {
 			// var basket5 = new Objects('basket2_obj','basket2_mtl',	-0.957,0.89,3.81,	0.0001,0.0001,0.0001,	-90,90,0)
 
 
-	
-		
+		//  var test = new Objects('tomatoSlice_obj', 'tomatoSlice_mtl', -0.05,0.93,4.25, 0.15,0.15,0.15,	0,0,0)
+		// world.add(test)
 		
 
 	//Action init: Select Tools
@@ -376,7 +397,7 @@ function draw() {
 
 	
 	// update selection UI
-	if(selected_items_name == undefined ){
+	if(selected_items == undefined ){
 		selectionUI.tag.setAttribute('text','value: You have not selected anything; color: rgb(0,0,0); align:center; height: 1; width:1;')
 	}else{
 		selectionUI.tag.setAttribute('text','value: You selected : '+ selected_items_name + ';  color: rgb(0,0,0); align:center; height: 1; width:1;')
@@ -514,11 +535,7 @@ class Interactables {
 						rotationX:_rotationX,
 						rotationY:_rotationY,
 						rotationZ:_rotationZ
-					})	
-					
-					save_items = selected_items 
-					
-					
+					})						
 					world.add(selected_items)
 
 
@@ -526,7 +543,11 @@ class Interactables {
 
 					if(selected_items_name == 'knife'){
 						knife_clicked = true
-					}else{
+					}else if(selected_items_name == 'tomato' || selected_items_name == 'bread' ){
+						save_items = selected_items 
+						save_items_name = _name
+					}
+					else{
 						knife_clicked = false
 					}
 
@@ -544,13 +565,10 @@ class Interactables {
 
 	}
 
-	checkmark(){
-		
-
-	}
-
 
 }
+
+
 
 class Customer{
 
