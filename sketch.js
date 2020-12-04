@@ -26,7 +26,7 @@ var pot, pan, knife
 var ketchup, hotSauce
 
 // *************** Interactable Objects 2: ingrediants (objects that can have actions implemented on)
-var tomato, cheese, bread
+var tomato, tomato_slice, cheese, bread
 var ingrediants = []				// array of objects that actions can implement on
 
 //*************** Interactable Objects 3: objects that action will take place
@@ -54,12 +54,16 @@ var selected_items
 var selected_items_name
 var save_items, save_items_name
 
-
-
 // complete order
 var food_in_plate = []
 
 
+
+
+
+
+// ****************************** SETUP() ******************************
+// ---------------------------------------------------------------------
 function setup() {
 	noCanvas();
 	world = new World('VRScene');
@@ -127,10 +131,10 @@ function setup() {
 
 
 	// ******** SERVING AREA ********
-// 	_asset,		_mtl,			x,	y,	z,		sX,sY,sZ,_rotationX,_rotationY,_rotationZ,			hitBozScale,_name
-
+		// PLATE: see clickFunction in class Interactables 
 		plate = new Interactables('dish_obj','dish_mtl',	0.85, 0.94, 5.13,	1.5,1.5,1.5,	0,0,0,	0.5,0.3,0.5,	'dish')
 	
+
 		// mat
 		var mat = new Plane ({
 			x:0.87, y:0.91, z:5.13,
@@ -173,55 +177,13 @@ function setup() {
 
 
 	//  ******** PREPARATION AREA ********
-		// cutting board: interactable
+		// cutting board
 		cuttingBoard = new Box ({
 			x:0, y:0.91, z:4.23,
 			width:1.21, height:0.9, depth:0.03,
 			scaleX:0.5,scaleY:0.5,scaleY:0.5,
 			rotationX: -90,
-			asset:'boardPattern',
-			clickFunction: function(theBox) {
-
-				// if user has selected sth
-				// if(holding){
-				// 	// put the selected item in the middle of the cutting board
-				// 	selected_items.setPosition(0,1,4.2)
-				// 	world.add(selected_items)
-
-				// 	let items_on_board = selected_items_name
-
-				// 	// add a hitbox for whatever items on cutting board
-				// 	let hitbox = new Plane ({
-				// 		x: 0,
-				// 		y: 1.1,
-				// 		z: 4.4,
-				// 		rotationX: 0,
-				// 		rotationY: 0,
-				// 		rotationZ:0,
-				// 		scaleX: 0.4,
-				// 		scaleY: 0.4,
-				// 		scaleZ: 0.4,
-
-				// 		red:255,
-				// 		opacity: 0.8,
-				// 		clickFunction: function(theBox){
-				// 			// did user select a knife
-				// 			if(knife_clicked){
-				// 				// swap the asset with sliced product 
-				// 				console.log("You have ",items_on_board)
-				// 				console.log("display a sliced product")
-
-				// 			}
-
-				// 		}
-				// 	})
-
-				// 	world.add(hitbox)
-				// 	console.log("cutting board was clicked!")
-				// }
-				// console.log("cutting board was clicked!")
-			}
-
+			asset:'boardPattern'
 		})
 
 		cuttingBoardBox = new Box({
@@ -232,6 +194,7 @@ function setup() {
 			clickFunction: function(theBox){
 				// if use has selected an item
 				if(selected_items != undefined){
+
 					// put the saved selected item in the box
 					if(knife_clicked == false){
 						save_items.setPosition(theBox.x,theBox.y,theBox.z)
@@ -241,37 +204,30 @@ function setup() {
 						// selected_items.rotateX(0)
 						// selected_items.setPosition(0.08,1,4.4)
 
-						// show finished produce
+						// tomato - show tomato slice
 						if(save_items_name == "tomato"){
-							save_items.hide()
-							save_items = new Objects('tomatoSlice_obj', 'tomatoSlice_mtl', -0.05,0.93,4.25, 0.15,0.15,0.15,	0,0,0, "tomato slice")
+                            // hide state before cutting
+                            save_items.hide()
+                            // substitute the product
+                            save_items = new Objects('tomatoSlice_obj', 'tomatoSlice_mtl', -0.05,0.93,4.25, 0.15,0.15,0.15,	0,0,0, "tomato slice")
+                            tomato_slice = save_items
 							save_items_name = save_items.name
-							// world.add(save_items)
 							save_items.show()
 						}
 						
 					}
-
-				}else {
-					// if knife is selected
-					// check to see if there is item on the cutting board
+					world.add(save_items)
+                // user has not selected an item
+                }else {
+                    // check to see if there is item on the cutting board already
+                    // save_items defines what was previously on the board
 					if(save_items != undefined){
 						// if so, selected item become the previously saved item
 						selected_items = save_items
 						selected_items_name = save_items_name 
 					}
-					// console.log("Item on board" + save_items)
 				}
-
-					// selected_items.setPosition(theBox.x,theBox.y,theBox.z)
-					// take note of what is on the cutting board
-					// console.log("the item on board is..."+items_on_board)
-					// console.log(items_on_board + ' was selected!')
-				
-
-				// console.log("cutting board was clicked!")
-				console.log("the item on board is..." + selected_items_name)
-
+				console.log("the item on cutting board is..." + selected_items_name)
 			}
 		
 		})
@@ -295,8 +251,6 @@ function setup() {
 		// ingrediants 
 		bread= new Objects('bread_obj','bread_mtl',		-1.13,1,4.276,	1,1,1,	-80,30,0,	"bread")
 		tomato= new Interactables('tomato_obj','tomato_mtl',	-0.5,1.45,3.64,	0.005,0.005,0.005,	-90,0,0, 0.3,0.3,0.3,	"tomato")
-		// tomato_slice = new Objects('tomatoSlice_obj', 'tomatoSlice_mtl', -0.05,0.93,4.25, 0.15,0.15,0.15,	0,0,0)
-		// tomato_slice.utensil.hide()
 		cheese = new Box({
 			x:0.072, y:1.387, z:5.97,
 			width:0.07,	height:0.05, depth: 0.13,
@@ -307,7 +261,7 @@ function setup() {
 		})
 		world.add(cheese)
 
-		ingrediants.push('bread', 'tomato', 'cheese')
+		ingrediants.push('tomato', 'cheese')
 	
 
 	// ******** DECORATIONS ********
@@ -383,6 +337,8 @@ function setup() {
 
 
 
+// ****************************** DRAW() ******************************
+// ---------------------------------------------------------------------
 function draw() {
 	// move the holding item correspondingly, this is only for knife_mtl
 	// if(holding_item_name = "knife"){
@@ -408,11 +364,47 @@ function draw() {
 
 
 
-// FUNCTIONS ----------------------------------------------------------------------
+// ****************************** FUNCTIONS ******************************
+// ---------------------------------------------------------------------
+function dishFunction(theBox){
+
+	// if use has selected an item
+	if(selected_items != undefined){
+
+		// tomato slice - put on dish
+		if(save_items_name == "tomato slice"){
+			console.log(save_items_name)
+			// tomato_slice.hide()
+			tomato_slice.setPosition(0.77, 0.93, 5.13)
+			// hide state before cutting
+			// save_items.hide()
+			// // substitute the product
+			// save_items = new Objects('tomatoSlice_obj', 'tomatoSlice_mtl', -0.05,0.93,4.25, 0.15,0.15,0.15,	0,0,0, "tomato slice")
+			// tomato_slice = save_items
+			// save_items_name = save_items.name
+			world.add(tomato_slice)
+		}
+			
+		// }
+		// user has not selected an item
+		}else {
+			// check to see if there is item on the cutting board already
+			// save_items defines what was previously on the board
+			// if(save_items != undefined){
+			// 	// if so, selected item become the previously saved item
+			// 	selected_items = save_items
+			// 	selected_items_name = save_items_name 
+			// }
+		}
+	console.log("the item on dish is..." + save_items_name)
+		
+}
 
 
 
-// CLASSES ----------------------------------------------------------------------
+// ****************************** CLASSES ******************************
+// ---------------------------------------------------------------------
+
 class Walls {
 	constructor(x,z,yrotate){
 		this.wall = new Plane({
@@ -466,7 +458,7 @@ class Fridge {
 	}
 }
 
-// display statioanry objects
+// display statioanry/decorative objects
 class Objects {
 	constructor(_asset,_mtl,x,y,z,sX,sY,sZ,_rotationX,_rotationY,_rotationZ,_name){
 
@@ -523,7 +515,7 @@ class Interactables {
 			clickFunction: function(theBox){
 			
 				// the user has seleted an item
-					holding = true
+					// holding = true
 
 					// update holding item
 						// unable to refer to the obejct directly via this.utensil
@@ -536,7 +528,7 @@ class Interactables {
 						rotationY:_rotationY,
 						rotationZ:_rotationZ
 					})						
-					world.add(selected_items)
+					// world.add(selected_items)
 
 
 					selected_items_name = _name
@@ -546,15 +538,29 @@ class Interactables {
 					}else if(selected_items_name == 'tomato' || selected_items_name == 'bread' ){
 						save_items = selected_items 
 						save_items_name = _name
+					}else if(selected_items_name == 'dish'){
+						if(save_items_name == "tomato slice"){
+							console.log(save_items_name)
+							// tomato_slice.hide()
+							save_items.hide()
+							save_items.setPosition(0.77, 1.2, 5.13)
+							// hide state before cutting
+							// save_items.hide()
+							// // substitute the product
+							// save_items = new Objects('tomatoSlice_obj', 'tomatoSlice_mtl', -0.05,0.93,4.25, 0.15,0.15,0.15,	0,0,0, "tomato slice")
+							// tomato_slice = save_items
+							// save_items_name = save_items.name
+							world.add(save_items)
+						}
 					}
 					else{
 						knife_clicked = false
 					}
 
 
-				console.log(holding)
-				console.log(selected_items)
-				console.log(selected_items_name + " was clicked!")
+				// console.log(holding)
+				// console.log(selected_items)
+				// console.log(selected_items_name + " was clicked!")
 
 			}
 		})
@@ -567,7 +573,6 @@ class Interactables {
 
 
 }
-
 
 
 class Customer{
