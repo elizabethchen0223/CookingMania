@@ -133,7 +133,7 @@ function setup() {
 
 	// ******** SERVING AREA ********
 		// PLATE: see clickFunction in class Interactables 
-		plate = new Interactables('dish_obj','dish_mtl',	0.85, 0.94, 5.13,	1.5,1.5,1.5,	0,0,0,	0.5,0.3,0.5,	'dish')
+		plate = new Interactables('dish_obj','dish_mtl',	0.85, 0.94, 5.13,	1.5,1.5,1.5,	0,0,0,	0.5,0.3,0.5,	'plate')
 	
 
 		// mat
@@ -207,6 +207,7 @@ function setup() {
 								save_items = selected_items 
 								save_items_name = selected_items_name
 								save_items.setPosition(theBox.x,theBox.y,theBox.z)
+								console.log("voila")
 							}
 						}						
 					}else{
@@ -226,7 +227,7 @@ function setup() {
 							save_items.show()
 						}
 						
-						knife_clicked = false
+						// knife_clicked = false
 						// knifeMovement()		****ERROR 
 						
 					}
@@ -238,10 +239,11 @@ function setup() {
 					if(save_items != undefined){
 						// if so, selected item becomes the previously saved item
 						selected_items = save_items
-						selected_items_name = save_items_name 
+						selected_items_name = save_items_name
+						console.log(save_items_name, selected_items_name, tomato_slice) 
 					}
 				}
-				console.log("the item on cutting board is..." + selected_items_name)
+				console.log("the item on cutting board is..." + save_items_name)
 			}
 		
 		})
@@ -385,15 +387,15 @@ function draw() {
 
 // ****************************** FUNCTIONS ******************************
 // ---------------------------------------------------------------------
-function dishFunction(theBox){
+function plateFunction(theBox){
 
-	// if use has selected an item
+	// if user has selected an item
 	if(selected_items != undefined){
-
-		// tomato slice - put on dish
+		console.log("1")
+		// tomato slice - put on plate
 		if(save_items_name == "tomato slice"){
 
-			tomato_slice.utensil.hide()
+			save_items.utensil.hide()
 			tomato_slice.utensil.setPosition(0.77, 0.93, 5.13)
 			tomato_slice.utensil.show()
 			world.add(tomato_slice)
@@ -402,17 +404,18 @@ function dishFunction(theBox){
 			save_items = undefined
 			save_items_name = undefined
 
-			// add ingredient to the dish array
+			// add ingredient to the plate array
 			food_in_plate.push(tomato_slice)
 			food_in_plate_name.push(tomato_slice.name)
 
 		}else {
+
 			warning = true
 			warning_msg = "Sorry, wrong ingredient"
 		}
 			
-		}
-	console.log("the item on dish is..." + save_items_name)
+	}
+	console.log("the item on plate is..." + save_items_name)
 		
 }
 
@@ -602,15 +605,18 @@ class Interactables {
 				}
 				else{
 					knife_clicked = false
-					knifeMovement()
-					if(selected_items_name == 'dish'){
+					// knifeMovement()
+					if(selected_items_name == 'plate'){
+
 						if(save_items_name == "tomato slice"){
-							dishFunction()
+							plateFunction()
 						}
+						// console.log("clicked plate")
 					}
-					
+					knifeMovement()
 				}
 				console.log(knife_clicked)
+				console.log(selected_items_name)
 			}
 		})
 		
