@@ -24,7 +24,7 @@ var customer_hitbox;
 //***************Interactable Objects
 var pot
 var knife
-
+var fridge
 //****************Cutting board
 var board_stack = 0.9
 var selected_items
@@ -235,10 +235,10 @@ function setup() {
 	//  ******** APPLIANCES ********
 	// FRIDGE ---------------
 		// fridge (see Fridge Class) : interactable
-		var fridgeBox = new Objects('fridge_obj', 'fridge_mtl', 0, 1.27, 5.9, 1,1,1, 0,90,0)
+		//var fridgeBox = new Objects('fridge_obj', 'fridge_mtl', 0, 1.27, 5.9, 1,1,1, 0,90,0)
 		//var fridgeDoorClosed = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', -0.15, 1.34, 5.74, 1,1,1, 0,220,0)
-		var fridgeDoorOpen = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', 0.403, 1.34, 5.55, 1,1,1, 0,80,0)
-
+		//var fridgeDoorOpen = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', 0.403, 1.34, 5.55, 1,1,1, 0,80,0)
+		fridge = new Fridge()
 	// ******** COOKING AREA ********
 		var stove = new Box({
 			x:-0.93, y:0.91, z:5.28,
@@ -331,9 +331,10 @@ function setup() {
 		var tomato= new Interactables('tomato_obj','tomato_mtl',	-0.5,1.45,3.64,	0.005,0.005,0.005,	-90,0,0,  -0.5,1.47,3.78,0,0,0,0.3,	"tomato")
 		var cheese = new Box({
 			x:0.072, y:1.387, z:5.97,
-			width:0.07,	height:0.05, depth: 0.13,
+			width:0.1,	height:0.08, depth: 0.13,
 			red:244, green:208, blue:63,
 			clickFunction: function(theBox) {
+				console.log("CHEESE!");
 				selected_items_name = "cheese"
 				if(holding == false){
 					holding = true
@@ -496,11 +497,12 @@ class Walls {
 //***Error: unable to display even though everything works fine if not in a container
 class Fridge {
 
-	cosntructor(){
+	constructor(){
+		this.isclose = true
+		this.hitboxsize = 0.35
 		this.myContainer = new Container3D({
-			x:0, y:1, z:0
+			x:0, y:0, z:0
 		})
-
 		this.fridgeBox = new OBJ({
 			asset:'fridge_obj',
 			mtl: 'fridge_mtl',
@@ -509,8 +511,8 @@ class Fridge {
 			rotationX:0,
 			rotationY:90
 		})
-
 		this.fridgeDoorClosed = new OBJ({
+
 			asset:'fridgeDoor_obj',
 			mtl: 'fridgeDoor_mtl',
 			x:-0.15, y:1.34, z:5.74,
@@ -518,8 +520,8 @@ class Fridge {
 			rotationX:0,
 			rotationY:220
 		})
-
 		this.fridgeDoorOpen = new OBJ({
+
 			asset:'fridgeDoor_obj',
 			mtl: 'fridgeDoor_mtl',
 			x:0.403, y:1.34, z:5.55,
@@ -527,10 +529,60 @@ class Fridge {
 			rotationX:0,
 			rotationY:80
 		})
+		this.hitbox_close = new Box({
 
-		// this.myContainer.addChild(this.fridgeBox)
-		// this.myContainer.addChild(this.fridgeDoorClosed)
-		// world.add(this.myContainer)
+			x:-0.05, y:1.34, z:5.74,
+			scaleX: this.hitboxsize, scaleY:this.hitboxsize+0.2, scaleZ:this.hitboxsize,
+			rotationX:0,opacity:0.5,
+			clickFunction: function(me){
+				fridge.Open_Door()
+
+			}
+
+		})
+		this.hitbox_open = new Box({
+
+			x:0.35, y:1.34, z:5.55,
+			scaleX: this.hitboxsize, scaleY:this.hitboxsize+0.2, scaleZ:this.hitboxsize,
+			rotationX:0,
+			rotationY:220,opacity:0.5,
+			clickFunction: function(me){
+				fridge.Close_Door()
+
+			}
+
+		})
+
+
+	  this.myContainer.addChild(this.fridgeBox)
+  	this.myContainer.addChild(this.fridgeDoorClosed)
+		this.myContainer.addChild(this.fridgeDoorOpen)
+		this.myContainer.addChild(this.hitbox_close)
+		this.myContainer.addChild(this.hitbox_open)
+		this.fridgeDoorOpen.hide()
+		this.hitbox_open.hide()
+		this.hitbox_close.hide()
+		this.hitbox_open.setY(-100)
+
+		world.add(this.myContainer)
+	}
+	Open_Door(){
+		this.fridgeDoorOpen.show()
+		this.fridgeDoorClosed.hide()
+		this.fridgeDoorClosed.setY(-100)
+
+		this.hitbox_open.setY(1.34)
+		this.hitbox_close.setY(-100)
+		this.isclose = false;
+	}
+	Close_Door(){
+		this.fridgeDoorOpen.hide()
+		this.fridgeDoorClosed.show()
+		this.fridgeDoorClosed.setY(1.34)
+
+		this.hitbox_open.setY(-100)
+		this.hitbox_close.setY(1.34)
+		this.isclose = true
 	}
 }
 
@@ -546,10 +598,7 @@ class Objects {
 			scaleX: sX, scaleY:sY, scaleZ: sZ,
 			rotationX:_rotationX,
 			rotationY:_rotationY,
-			rotationZ:_rotationZ,
-			clickFunction: function(me){
-				console.log(pot.name);
-			}
+			rotationZ:_rotationZ
 		})
 		world.add(this.utensil)
 
@@ -805,7 +854,8 @@ class Customer{
 			clickFunction: function(me){
 
 				console.log("Kicked out the customer");
-				//current_customer.remove_from_world()
+				remaining_time = int(random(15,30))
+
 				score -= 1
 				score_holder.tag.setAttribute('text','value: Score: ' +score+  '\n Remaining Time: '+remaining_time+' ; color: rgb(0,0,0); align: center;');
 				food_in_plate = []
