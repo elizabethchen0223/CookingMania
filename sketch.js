@@ -156,7 +156,7 @@ function setup() {
 
 	// Ajust Camera
 	world.setUserPosition(camX,camY,camZ)
-
+	world.camera.holder.removeAttribute('wasd-controls')
 
 	//  ******** CUSTOMERS ********
 	customerx = 3
