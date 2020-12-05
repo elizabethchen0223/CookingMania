@@ -93,6 +93,8 @@ function setup() {
 
 	// Ajust Camera
 	world.setUserPosition(camX,camY,camZ)
+	world.camera.holder.removeAttribute('wasd-controls')
+
 
 	// ***************Check recipe button**************
 	recipe_container = new Container3D({
@@ -279,7 +281,7 @@ function setup() {
 	//  ******** APPLIANCES ********
 	// FRIDGE ---------------
 		// fridge (see Fridge Class) : interactable
-		fridgeBox = new Fridge()
+		fridge = new Fridge()
 		// fridgeBox = new Objects('fridge_obj', 'fridge_mtl', 0, 1.27, 5.9, 1,1,1, 0,90,0)
 		// var fridgeDoorClosed = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', -0.15, 1.34, 5.74, 1,1,1, 0,220,0)
 		// var fridgeDoorOpen = new Objects('fridgeDoor_obj', 'fridgeDoor_mtl', 0.403, 1.34, 5.55, 1,1,1, 0,80,0)
@@ -693,13 +695,13 @@ class Walls {
 
 //***Error: unable to display even though everything works fine if not in a container
 class Fridge {
+
 	constructor(){
+		this.isclose = true
+		this.hitboxsize = 0.35
 		this.myContainer = new Container3D({
-			// blank
+			x:0, y:0, z:0
 		})
-
-		this.name = 'fridge'
-
 		this.fridgeBox = new OBJ({
 			asset:'fridge_obj',
 			mtl: 'fridge_mtl',
@@ -708,8 +710,8 @@ class Fridge {
 			rotationX:0,
 			rotationY:90
 		})
-
 		this.fridgeDoorClosed = new OBJ({
+
 			asset:'fridgeDoor_obj',
 			mtl: 'fridgeDoor_mtl',
 			x:-0.15, y:1.34, z:5.74,
@@ -717,8 +719,8 @@ class Fridge {
 			rotationX:0,
 			rotationY:220
 		})
-
 		this.fridgeDoorOpen = new OBJ({
+
 			asset:'fridgeDoor_obj',
 			mtl: 'fridgeDoor_mtl',
 			x:0.403, y:1.34, z:5.55,
@@ -726,31 +728,60 @@ class Fridge {
 			rotationX:0,
 			rotationY:80
 		})
+		this.hitbox_close = new Box({
 
-		this.hitbox = new Box ({
-			x: -0.06,
-			y: 1.31,
-			z: 5.74,
-			scaleX: 0.51,
-			scaleY: 0.79,
-			scaleZ: 0.1,
+			x:-0.05, y:1.34, z:5.74,
+			scaleX: this.hitboxsize, scaleY:this.hitboxsize+0.2, scaleZ:this.hitboxsize,
+			rotationX:0,opacity:0.5,
+			clickFunction: function(me){
+				fridge.Open_Door()
 
-			red:255,
-			opacity: 0.8,
-
-
-			clickFunction: function(theBox){
-				console.log("You just clicked the fridge ")
-
-				
-				selected_items_name = "fridge"
 			}
+
+		})
+		this.hitbox_open = new Box({
+
+			x:0.35, y:1.34, z:5.55,
+			scaleX: this.hitboxsize, scaleY:this.hitboxsize+0.2, scaleZ:this.hitboxsize,
+			rotationX:0,
+			rotationY:220,opacity:0.5,
+			clickFunction: function(me){
+				fridge.Close_Door()
+
+			}
+
 		})
 
-		this.myContainer.addChild(this.fridgeBox)
-		this.myContainer.addChild(this.fridgeDoorClosed)
-		this.myContainer.addChild(this.hitbox)
+
+	  this.myContainer.addChild(this.fridgeBox)
+  	this.myContainer.addChild(this.fridgeDoorClosed)
+		this.myContainer.addChild(this.fridgeDoorOpen)
+		this.myContainer.addChild(this.hitbox_close)
+		this.myContainer.addChild(this.hitbox_open)
+		this.fridgeDoorOpen.hide()
+		this.hitbox_open.hide()
+		this.hitbox_close.hide()
+		this.hitbox_open.setY(-100)
+
 		world.add(this.myContainer)
+	}
+	Open_Door(){
+		this.fridgeDoorOpen.show()
+		this.fridgeDoorClosed.hide()
+		this.fridgeDoorClosed.setY(-100)
+
+		this.hitbox_open.setY(1.34)
+		this.hitbox_close.setY(-100)
+		this.isclose = false;
+	}
+	Close_Door(){
+		this.fridgeDoorOpen.hide()
+		this.fridgeDoorClosed.show()
+		this.fridgeDoorClosed.setY(1.34)
+
+		this.hitbox_open.setY(-100)
+		this.hitbox_close.setY(1.34)
+		this.isclose = true
 	}
 }
 
