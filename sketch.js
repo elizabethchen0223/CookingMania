@@ -1,10 +1,14 @@
+// PROBLEMS THAT STILL NEEDS SOLVING：
+// - clicking on the cutting board if there ar
+
 var world
 var camX = 0
 var camY = 1.8
 var camZ = 5
 
 //************* HUD field
-var recipe_container
+var recipe_container = ["tomato slice","lettuce shred","bread","beef"]		//temporary recipe holder for a hamburger
+
 var recipe_steak_button,recipe_steak_textholder
 var recipe_noodle_button, recipe_noodle_textholder
 var steak_container, steak_button, steak_textholder
@@ -240,10 +244,9 @@ function setup() {
 						// if so, selected item becomes the previously saved item
 						selected_items = save_items
 						selected_items_name = save_items_name
-						console.log(save_items_name, selected_items_name, tomato_slice) 
 					}
 				}
-				console.log("the item on cutting board is..." + save_items_name)
+				console.log("You clicked on the cutting board!")
 			}
 		
 		})
@@ -327,12 +330,16 @@ function setup() {
 			width:0.5, height:0.1,
 			clickFunction: function(thePlane){
 				console.log("Clear Selection!")
-				clearSelection = true					
-				knife_clicked = false
-				selected_items = undefined
-				selected_items_name = undefined
-				// holdingitem = undefined
-				knifeMovement()
+			
+				if(knife_clicked){
+					knife_clicked = false
+					knifeMovement()
+				}			
+				else{
+					selected_items = undefined
+					selected_items_name = undefined
+				}
+
 			}
 		})
 		clearSelectionBtn.tag.setAttribute('text','value: Clear Selection ; color: rgb(0,0,0); align:center; height: 1; width:1;')
@@ -367,9 +374,6 @@ function draw() {
 		holdingitem.setX(map(mouseX,0,windowWidth,-1,1))
 		holdingitem.setY(map(mouseY,0,windowHeight,-0.5,0.5) * -1)
 	}
-	// else{
-	// 	holdingitem = undefined
-	// }
 
 
 	
@@ -380,6 +384,15 @@ function draw() {
 		selectionUI.tag.setAttribute('text','value: You selected : '+ selected_items_name + ';  color: rgb(0,0,0); align:center; height: 1; width:1;')
 	}
 
+	// if(clearSelection){
+	// 	knife_clicked = false
+	// 	selected_items = undefined
+	// 	selected_items_name = undefined
+	// 	knifeMovement()
+	// }else{
+
+	// }
+
 
 }
 
@@ -389,16 +402,16 @@ function draw() {
 // ---------------------------------------------------------------------
 function plateFunction(theBox){
 
+	console.log("you clicked plate")
+
 	// if user has selected an item
 	if(selected_items != undefined){
-		console.log("1")
 		// tomato slice - put on plate
 		if(save_items_name == "tomato slice"){
 
 			save_items.utensil.hide()
 			tomato_slice.utensil.setPosition(0.77, 0.93, 5.13)
 			tomato_slice.utensil.show()
-			world.add(tomato_slice)
 
 			// clear save_items
 			save_items = undefined
@@ -408,14 +421,40 @@ function plateFunction(theBox){
 			food_in_plate.push(tomato_slice)
 			food_in_plate_name.push(tomato_slice.name)
 
-		}else {
+			world.add(tomato_slice)
+		}
+		// check to see if the plate has what we need to complete a recipe
+		else if(selected_items_name == "plate"){
+			console.log("in checking step")
 
 			warning = true
 			warning_msg = "Sorry, wrong ingredient"
 		}
 			
+	}else{
+		console.log("in checking step")
+		// console.log(food_in_plate_name)
+		var currentlyLack = []
+		
+		for(let i=0; i < recipe_container.length; i ++){
+			
+			for(let j=0; j<food_in_plate_name.length; j++){
+				if(food_in_plate_name[j] != recipe_container[i]){
+					currentlyLack.push(recipe_container[i])
+				}
+			}
+		}
+
+		if(currentlyLack.length == 0){
+			console.log("You have all the ingrediants for a hamburger")
+		}else{
+			console.log("You still need more ingrediants")
+		}
+		
+		// console.log(recipe_container, food_in_plate_name)
+
 	}
-	console.log("the item on plate is..." + save_items_name)
+
 		
 }
 
@@ -425,6 +464,7 @@ function knifeMovement(){
 	if(knife_clicked){
 		// hide origianl knife
 		knife.utensil.hide()
+		holdingitem = new Objects('knife_obj','knife_mtl',	0.378, 0.84,4.35,	0.0015,0.0015,0.0015,	90,90,0, "knife").utensil
 
 		//set the position and rotation to look natural
 		holdingitem.setPosition(0,-0.2,-0.5)
@@ -434,17 +474,24 @@ function knifeMovement(){
 		//set this as a cursor
 		holdingitem.tag.setAttribute('cursor', 'rayOrigin: mouse');
 		world.camera.holder.appendChild(holdingitem.tag);
+
 	}
 	else{
+		
 		// remove knife from the cursor camera
 		world.camera.holder.removeChild(holdingitem.tag);
 		knife.utensil.show()			// show original knife
 		holdingitem.hide()				
 		holdingitem = undefined
-		world.remove(holdingitem)		// remove cursor knife - prevent overloading the browser
 
+		// clear selection
+		selected_items = undefined
+		selected_items_name = undefined
+
+		world.remove(holdingitem)		// remove cursor knife - prevent overloading the browser
 	}
 }
+
 
 
 // ****************************** CLASSES ******************************
@@ -598,25 +645,27 @@ class Interactables {
 
 
 				if(selected_items_name == 'knife'){
-					knife_clicked = true
-					holdingitem = new Objects('knife_obj','knife_mtl',	0.378, 0.84,4.35,	0.0015,0.0015,0.0015,	90,90,0, "knife").utensil
-
+					if(knife_clicked){
+						knife_clicked = false
+					}else{
+						knife_clicked = true
+					}
 					knifeMovement()
+					console.log(knife_clicked)
+
 				}
 				else{
 					knife_clicked = false
 					// knifeMovement()
 					if(selected_items_name == 'plate'){
 
-						if(save_items_name == "tomato slice"){
+						// if(save_items_name == "tomato slice"){
 							plateFunction()
-						}
-						// console.log("clicked plate")
+						// }
 					}
 					knifeMovement()
 				}
-				console.log(knife_clicked)
-				console.log(selected_items_name)
+				// console.log(knife_clicked)
 			}
 		})
 		
