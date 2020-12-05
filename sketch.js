@@ -437,7 +437,7 @@ function setup() {
 
 		//Action init: Select Tools
 		// 	//remove the default cursor
-			world.camera.holder.removeChild( world.camera.cursor.tag );
+			// world.camera.holder.removeChild( world.camera.cursor.tag );
 
 	
 	// ****************************** UI ******************************
@@ -487,25 +487,25 @@ function setup() {
 // ---------------------------------------------------------------------
 function draw() {
 	
-	// if(frameCount%60 == 0){
-	// 	score_holder.tag.setAttribute('text','value: Score: ' +score+  '\n Remaining Time: '+remaining_time+' ; color: rgb(0,0,0); align: center;');
+	if(frameCount%60 == 0){
+		score_holder.tag.setAttribute('text','value: Score: ' +score+  '\n Remaining Time: '+remaining_time+' ; color: rgb(0,0,0); align: center;');
 
-	// 	remaining_time -= 1
-	// 	if(remaining_time <= 0){
+		remaining_time -= 1
+		if(remaining_time <= 0){
 
 
-	// 		current_customer.remove_from_world()
-	// 		let prev_customer = current_customer
-	// 		while(prev_customer == current_customer){
-	// 			current_customer = random(customers_list);
-	// 		}
-	// 		set_random_customer_order()
-	// 		current_customer.add_to_world()
-	// 		remaining_time = int(random(15,30))
-	// 		score -= 1
-	// 		score_holder.tag.setAttribute('text','value: Score: ' +score+  '\n Remaining Time: '+remaining_time+' ; color: rgb(0,0,0); align: center;');
-	// 	}
-	// }
+			current_customer.remove_from_world()
+			let prev_customer = current_customer
+			while(prev_customer == current_customer){
+				current_customer = random(customers_list);
+			}
+			set_random_customer_order()
+			current_customer.add_to_world()
+			remaining_time = int(random(15,30))
+			score -= 1
+			score_holder.tag.setAttribute('text','value: Score: ' +score+  '\n Remaining Time: '+remaining_time+' ; color: rgb(0,0,0); align: center;');
+		}
+	}
 
 
 	// move the holding item correspondingly following the mouse
