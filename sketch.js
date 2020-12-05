@@ -1,5 +1,6 @@
 // PROBLEMS THAT STILL NEEDS SOLVING：
-// - clicking on the cutting board if there ar
+// - clicking on the cutting board will whatever items that were already there disappear
+// 
 
 var world
 var camX = 0
@@ -9,10 +10,15 @@ var camZ = 5
 //************* HUD field
 var recipe_container = ["tomato slice","lettuce shred","bread","beef"]		//temporary recipe holder for a hamburger
 
-var recipe_steak_button,recipe_steak_textholder
-var recipe_noodle_button, recipe_noodle_textholder
-var steak_container, steak_button, steak_textholder
-var noodle_container, noodle_button, noodle_textholder
+var recipe_container, recipe_show_button, recipe_textholder
+var recipe_opened_container,recipe_close_button,recipe_close_textholder
+var recipe_detail
+var holdingitem_show_box
+var holdingitem_show_box_img
+
+var score = 0
+var remaining_time = 10
+var score_holder
 
 //************* UI 
 var selected_items 					// user's current selection
@@ -42,8 +48,11 @@ var ingredients = []				// array of objects that actions can implement on;
 									// this should only be those that can be displayed on cutting board
 
 //*************** Interactable Objects 3: objects that action will take place
+var board_stack = 0.9
 var plate, cuttingBoardBox, menu_stand, trashCan
 var cuttingBoard
+var cutting_board_item = []
+
 
 //*************** Decorative / Stationary Objects 
 var _floor, counter, wall1, wall2, wall3, wall4, wall5, wall6
@@ -54,14 +63,19 @@ var plant1, basket1, basket2,basket3
 var holdingitem	= knife			// item that we are currently holding
 var holding_item_name		// item name that we are currently holding
 var container_holding_item
+var holding = false		   	// is there an item in our hands?
+var clicked = false
+
 
 // variable for specific tools 
 var knife_clicked = false		// keep track of knife
 
-// complete order
+// order check
 var food_in_plate = []
 var food_in_plate_name = []
 var dish_clicked = false
+
+var iscorrect_food = false
 
 
 
@@ -73,8 +87,112 @@ function setup() {
 	noCanvas();
 	world = new World('VRScene');
 
+	let recipex = -1.5;
+	let recipey = 0.5;
+	let recipez = -0.1;
+
 	// Ajust Camera
 	world.setUserPosition(camX,camY,camZ)
+
+	// ***************Check recipe button**************
+	recipe_container = new Container3D({
+		x:recipex
+	});
+	recipe_show_button = new Plane({
+		x:0, y:recipey,z:recipez,
+		red:255,green:0,blue:0,
+		width:1,height:0.5,depth:1,
+		clickFunction: function(me){
+
+			console.log("Show Recipe");
+			recipe_opened_container.setY(0);
+			recipe_opened_container.show()
+			recipe_container.hide();
+			recipe_container.setY(-100);
+		}
+	})
+	recipe_textholder = new Plane({
+
+		x:0, y:recipey,z:recipez,
+		width: 1, height: 0.3,
+		red: 255, green: 255, blue: 255,
+		clickFunction: function(me){
+
+			console.log("Show Recipe");
+			recipe_opened_container.setY(0);
+			recipe_opened_container.show()
+			recipe_container.hide();
+			recipe_container.setY(-100);
+		}
+
+	})
+	recipe_textholder.tag.setAttribute('text','value: Check Recipe; color: rgb(0,0,0); align: center;');
+	recipe_container.addChild(recipe_show_button);
+	recipe_container.addChild(recipe_textholder);
+	world.camera.cursor.addChild(recipe_container);
+
+	//******************** When recipe is opend
+	recipe_opened_container = new Container3D({
+		x:recipex,
+		y: -100
+	});
+	recipe_close_button = new Plane({
+		x:0, y:recipey,z:recipez,
+		red:255,green:0,blue:0,
+		width:1,height:0.5,depth:1,
+		clickFunction: function(me){
+
+			console.log("close Recipe");
+			recipe_container.setY(0);
+			recipe_container.show()
+			recipe_opened_container.hide();
+			recipe_opened_container.setY(-100);
+		}
+	})
+	recipe_close_textholder = new Plane({
+
+		x:0, y:recipey,z:recipez,
+		width: 1, height: 0.3,
+		red: 255, green: 255, blue: 255,
+		clickFunction: function(me){
+
+			console.log("close Recipe");
+			recipe_container.setY(0);
+			recipe_container.show()
+			recipe_opened_container.hide();
+			recipe_opened_container.setY(-100);
+		}
+
+	})
+	recipe_close_textholder.tag.setAttribute('text','value:' +recipe_detail+ ' ; color: rgb(0,0,0); align: center;');
+	recipe_opened_container.addChild(recipe_close_button);
+	recipe_opened_container.addChild(recipe_close_textholder);
+	world.camera.cursor.addChild(recipe_opened_container);
+	recipe_opened_container.hide();
+
+
+	//************************ Hold Item Show box
+	holdingitem_show_box = new Plane({
+		x:0,y:0.5,z:0,
+		width:0.2,
+		height:0.2
+	})
+	remaining_time = int(random(15,30))
+
+	score_holder = new Plane({
+		x:0,y:0.7,z:0,
+		red:186,green:255,blue:201,
+		width:1,
+		height:0.2
+	})
+	score_holder.tag.setAttribute('text','value: Score: ' +score+  '\n Remaining Time: '+remaining_time+' ; color: rgb(0,0,0); align: center;');
+
+	world.camera.cursor.addChild(holdingitem_show_box);
+	world.camera.cursor.addChild(score_holder);
+
+	//show the HUD
+	world.camera.cursor.show();
+
 
 
 	//  ******** CUSTOMERS ********
@@ -95,7 +213,7 @@ function setup() {
 	current_customer = random(customers_list);
 	current_customer.add_to_world()
 
-	customer_order_list = ["Steak","Noodle","Sandwitch"]
+	customer_order_list = ["Steak","Noodle","Sandwich"]
 	customer_order = random(customer_order_list);
 	console.log(customer_order);
 
@@ -230,10 +348,7 @@ function setup() {
 							save_items_name = save_items.name
 							save_items.show()
 						}
-						
-						// knife_clicked = false
-						// knifeMovement()		****ERROR 
-						
+		
 					}
 					world.add(save_items)
                 // user has not selected an item
@@ -256,7 +371,7 @@ function setup() {
 
 
 		knife = new Interactables('knife_obj','knife_mtl',	0.378, 0.84,4.35,	0.0015,0.0015,0.0015,	90,90,0,	0.25,0.2,0.42, "knife")
-		menu_stand = new Objects('menuStand_obj','menuStand_mtl', 0.89,1.1,4.2, 0.34,0.34,0.28, 0,130,0,"menu_stand")
+		// menu_stand = new Objects('menuStand_obj','menuStand_mtl', 0.89,1.1,4.2, 0.34,0.34,0.28, 0,130,0,"menu_stand")
 
 
 
@@ -275,6 +390,27 @@ function setup() {
 			width:0.07,	height:0.05, depth: 0.13,
 			red:244, green:208, blue:63,
 			clickFunction: function(theBox) {
+				selected_items_name = "cheese"
+				if(holding == false){
+					holding = true
+					holdingitem_show_box.setAsset("cheese_hold")
+
+						selected_items = new Box({
+							width:0.2,
+							height:0.02,
+							depth:0.2,
+							red:255,green:255,blue:0,
+							rotationX: 0
+						})
+					}
+				// if user would like to put back the item
+				else {
+					holding = false
+					holdingitem_show_box.setAsset("")
+
+					holdingitem.hide()
+					holding_item_name = ''
+				}
 				console.log("cheese was clicked!")
 			}
 		})
@@ -298,29 +434,11 @@ function setup() {
 		// world.add(test)
 		
 
-	//Action init: Select Tools
 
-		// did the user click on an item's hitbox??
+		//Action init: Select Tools
 		// 	//remove the default cursor
 			world.camera.holder.removeChild( world.camera.cursor.tag );
 
-		// //default item is knife for now
-		// if(knife_clicked){
-		// 	holdingitem = knife.utensil
-		// 	console.log("holdingitem")
-		// 	console.log(holdingitem)
-
-		// // 	holding_item_name = holdingitem.name
-		// // 	//set the position and rotation to look natural
-		// 	holdingitem.setPosition(0,-0.2,-0.5)
-		// 	holdingitem.setRotation(0,0,0)
-		// 	holdingitem.rotateY(100)
-
-		// // 	//set this as a cursor
-		// 	holdingitem.tag.setAttribute('cursor', 'rayOrigin: mouse');
-
-		// 	world.camera.holder.appendChild(holdingitem.tag);
-		// }
 	
 	// ****************************** UI ******************************
 		// clear selection button
@@ -369,12 +487,32 @@ function setup() {
 // ---------------------------------------------------------------------
 function draw() {
 	
+	// if(frameCount%60 == 0){
+	// 	score_holder.tag.setAttribute('text','value: Score: ' +score+  '\n Remaining Time: '+remaining_time+' ; color: rgb(0,0,0); align: center;');
+
+	// 	remaining_time -= 1
+	// 	if(remaining_time <= 0){
+
+
+	// 		current_customer.remove_from_world()
+	// 		let prev_customer = current_customer
+	// 		while(prev_customer == current_customer){
+	// 			current_customer = random(customers_list);
+	// 		}
+	// 		set_random_customer_order()
+	// 		current_customer.add_to_world()
+	// 		remaining_time = int(random(15,30))
+	// 		score -= 1
+	// 		score_holder.tag.setAttribute('text','value: Score: ' +score+  '\n Remaining Time: '+remaining_time+' ; color: rgb(0,0,0); align: center;');
+	// 	}
+	// }
+
+
 	// move the holding item correspondingly following the mouse
 	if(knife_clicked){
 		holdingitem.setX(map(mouseX,0,windowWidth,-1,1))
 		holdingitem.setY(map(mouseY,0,windowHeight,-0.5,0.5) * -1)
 	}
-
 
 	
 	// update selection UI
@@ -384,22 +522,66 @@ function draw() {
 		selectionUI.tag.setAttribute('text','value: You selected : '+ selected_items_name + ';  color: rgb(0,0,0); align:center; height: 1; width:1;')
 	}
 
-	// if(clearSelection){
-	// 	knife_clicked = false
-	// 	selected_items = undefined
-	// 	selected_items_name = undefined
-	// 	knifeMovement()
-	// }else{
-
-	// }
-
-
 }
 
 
 
 // ****************************** FUNCTIONS ******************************
 // ---------------------------------------------------------------------
+function set_random_customer_order(){
+	customer_order = random(customer_order_list);
+
+	if(customer_order == "Steak"){
+		recipe_detail = "The Customer wants a Steak"
+
+	}
+	else if(customer_order == "Noodle"){
+		recipe_detail = "The Customer wants some Noodles"
+	}
+	else if(customer_order == "Sandwich"){
+		recipe_detail = "The Customer wants a Sandwich \n\n Get the bread on the cutting board \n Get the tomato on the cuttin board \n Get the cheese on the cutting board \n Get the bread on the cutting board"
+	}
+	recipe_close_textholder.tag.setAttribute('text','value:' +recipe_detail+ ' ; color: rgb(0,0,0); align: center;');
+}
+
+function check_recipe(){
+	if(customer_order == "Steak"){
+
+	}
+	else if(customer_order == "Sandwich"){
+		if(food_in_plate[0] != "bread" && food_in_plate[1] != "tomato" && food_in_plate[2] != "cheese", food_in_plate[3] != "bread"){
+
+			food_in_plate = []
+			for(let i = 0; i < cutting_board_item.length; i++){
+				world.remove( cutting_board_item[i])
+			}
+			cutting_board_item = []
+			console.log(food_in_plate);
+			console.log(cutting_board_item);
+			console.log("wrong food");
+			iscorrect_food = false
+			score -= 1
+			score_holder.tag.setAttribute('text','value: Score: ' +score+  '\n Remaining Time: '+remaining_time+' ; color: rgb(0,0,0); align: center;');
+		}
+		else{
+			score += remaining_time * 3
+			food_in_plate = []
+			for(let i = 0; i < cutting_board_item.length; i++){
+				world.remove( cutting_board_item[i])
+			}
+			cutting_board_item = []
+			iscorrect_food = true
+			console.log("GOOD JOB");
+			score_holder.tag.setAttribute('text','value: Score: ' +score+  '\n Remaining Time: '+remaining_time+' ; color: rgb(0,0,0); align: center;');
+
+		}
+	}
+	else if(customer_order == "Noodle"){
+
+
+	}
+}
+
 function plateFunction(theBox){
 
 	console.log("you clicked plate")
@@ -457,7 +639,6 @@ function plateFunction(theBox){
 
 		
 }
-
 
 function knifeMovement(){
 
@@ -667,6 +848,81 @@ class Interactables {
 				}
 				// console.log(knife_clicked)
 			}
+
+			// CLICK FUNCTION FROM YUSUNG ------------------------------------
+			// clickFunction: function(theBox){
+			// 	selected_items_name = _name
+
+			// 	if(selected_items_name != 'plate'){
+
+			// 		// the user has seleted an item
+			// 		if(holding == false){
+			// 			holding = true
+
+			// 			// update holding item
+			// 				// unable to refer to the obejct directly via this.utensil
+			// 				// therefore have to create another obj
+
+			// 			if(selected_items_name == "tomato"){
+			// 				holdingitem_show_box.setAsset("tomato_hold")
+			// 				selected_items = new Cylinder({
+			// 					x:x, y:y, z:z,
+			// 					radius: 0.1,
+			// 					height:0.02,
+			// 					red:255,green:0,blue:0,
+			// 					rotationX: 0
+			// 				})
+
+			// 			}
+			// 			else {
+			// 				if(selected_items_name == "bread"){
+			// 					holdingitem_show_box.setAsset("bread_hold")
+			// 				}
+			// 				selected_items = new OBJ({asset:_asset,
+			// 					mtl: _mtl,
+			// 					x:x, y:y, z:z,
+			// 					scaleX: sX, scaleY:sY, scaleZ: sZ,
+			// 					rotationX:_rotationX,
+			// 					rotationY:_rotationY,
+			// 					rotationZ:_rotationZ
+			// 				})
+
+			// 			}
+
+
+			// 			if(selected_items_name == 'knife'){
+			// 				knife_clicked = true
+			// 			}else{
+			// 				knife_clicked = false
+			// 			}
+
+
+			// 		}
+			// 		// if user would like to put back the item
+			// 		else {
+			// 			holding = false
+			// 			holdingitem_show_box.setAsset("")
+
+			// 			holdingitem.hide()
+			// 			holding_item_name = ''
+			// 		}
+			// 		//world.add(checkmark)
+
+			// 		// holdingitem.toggleVisibility()
+
+			// 		console.log("holding is " + holding)
+			// 		console.log(selected_items_name + " was clicked!")
+			// 		// console.log(selected_items)
+			// 	}
+			// 	else{
+			// 		board_stack = 0.9
+			// 		for(let i = 0; i < cutting_board_item.length; i++){
+			// 			cutting_board_item[i].setPosition(x,y+(0.05*i),z)
+			// 		}
+			// 	}
+			// }
+
+
 		})
 		
 		this.container.add(this.hitbox)
@@ -677,7 +933,6 @@ class Interactables {
 
 
 }
-
 
 class Customer{
 
@@ -711,14 +966,14 @@ class Customer{
 
 			side:'double',
 			clickFunction: function(me){
-
+				//reveal order
 				console.log(customer_order);
 			}
 		})
 
 		this.serve_button = new Plane({
 			x: customerx + x_align -0.5,
-			y: customery,
+			y: customery + 1,
 			z: customerz + z_align + 1,
 			red:0,green:120,blue:0,
 			rotationX: 0,
@@ -726,18 +981,34 @@ class Customer{
 			scaleX: 1,
 			scaleY: 0.5,
 			scaleZ: 1,
-
+			asset:'serveimg',
 			side:'double',
 			clickFunction: function(me){
 
 				console.log("you served " + customer_order);
+				//check food
+				check_recipe()
+				if(iscorrect_food){
+
+					//score
+					current_customer.remove_from_world()
+					let prev_customer = current_customer
+					while(prev_customer == current_customer){
+						current_customer = random(customers_list);
+					}
+					set_random_customer_order()
+					console.log(recipe_detail);
+					recipe_close_textholder.tag.setAttribute('text','value:' +recipe_detail+ ' ; color: rgb(0,0,0); align: center;');
+
+					current_customer.add_to_world()
+					iscorrect_food = false
+				}
 			}
 		})
-		this.serve_button.tag.setAttribute('text','value: Serve the Food; color: rgb(255,255,255); align: center;');
 
 		this.kickout_button = new Plane({
 			x: customerx + x_align -0.5,
-			y: customery,
+			y: customery+1,
 			z: customerz + z_align-1,
 			red:120,green:0,blue:0,
 
@@ -746,24 +1017,30 @@ class Customer{
 			scaleX: 1,
 			scaleY: 0.5,
 			scaleZ: 1,
-
+			asset: 'kickoutimg',
 			side:'double',
 			clickFunction: function(me){
 
 				console.log("Kicked out the customer");
 				//current_customer.remove_from_world()
+				score -= 1
+				score_holder.tag.setAttribute('text','value: Score: ' +score+  '\n Remaining Time: '+remaining_time+' ; color: rgb(0,0,0); align: center;');
+				food_in_plate = []
+				for(let i = 0; i < cutting_board_item.length; i++){
+					world.remove( cutting_board_item[i])
+				}
+				cutting_board_item = []
 				current_customer.remove_from_world()
 				let prev_customer = current_customer
 				while(prev_customer == current_customer){
 					current_customer = random(customers_list);
 				}
+				set_random_customer_order()
 				current_customer.add_to_world()
 
 			}
 
 		})
-
-		this.kickout_button.tag.setAttribute('text','value: Kick Out!; color: rgb(255,255,255); align: center;');
 
 		this.container.addChild(this.customer)
 		this.container.addChild(this.hitbox)
@@ -776,7 +1053,6 @@ class Customer{
 	//constructor ends
 
 	add_to_world(){
-		customer_order = random(customer_order_list)
 		this.container.setY(0)
 
 	}
