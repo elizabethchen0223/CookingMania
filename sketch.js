@@ -65,6 +65,24 @@ var holding_item_name		// item name that we are currently holding
 var container_holding_item
 var holding = false		   	// is there an item in our hands?
 var clicked = false
+var stove_clicked = false
+
+//variable for noodles
+var noodle_clicked = false
+var pot_clicked = false
+var boiled = false
+var noodle_in_pot = false
+var water_filled = false
+var water
+var pasta1, pasta2, soup, egg1
+var bubble=[]
+var egg_clicked = false
+var egg_in_pot = false
+var noodle_prepared
+var noodle_finished = false
+var bubbled = false
+var plate_clicked = false
+
 
 
 // variable for specific tools 
@@ -79,11 +97,42 @@ var iscorrect_food = false
 
 
 
+<<<<<<< HEAD
 
 
 // ****************************** SETUP() ******************************
 // ---------------------------------------------------------------------
+=======
+//sound
+var stove_click, boil, cut_tomato, food_to_plate, fridge_close, fridge_open, egg_cracking, eating
+var garbage, putting_cheese_on, sauce, switch_on, background_music, fry_oil, water_pouring
+
+
+//preload sounds
+function preload(){
+	stove_click = loadSound("resources/sounds/open_oven.wav")
+	boil = loadSound("resources/sounds/boil.wav")
+	cut_tomato = loadSound("resources/sounds/cut_tomato.wav")
+	food_to_plate = loadSound("resources/sounds/food_to_plate.wav")
+	fridge_close = loadSound("resources/sounds/fridge_close.wav")
+	fridge_open = loadSound("resources/sounds/garbage.wav")
+	garbage = loadSound("resources/sounds/garbage.wav")
+	putting_cheese_on = loadSound("resources/sounds/putting_cheese_on.wav")
+	sauce = loadSound("resources/sounds/sauce.wav")
+	switch_on = loadSound("resources/sounds/switch.wav")
+	background_music = loadSound("resources/sounds/background_music.wav")
+	fry_oil = loadSound("resources/sounds/fry_oil.wav")
+	water_pouring = loadSound("resources/sounds/water_pouring.wav")
+	egg_cracking = loadSound("resources/sounds/egg_cracking.wav")
+	eating = loadSound("resources/sounds/eating.mp3")
+}
+
+
+
+
+>>>>>>> 7926a081a50ea8ee48639971d5e8c95c67f7516f
 function setup() {
+	background_music.loop()
 	noCanvas();
 	world = new World('VRScene');
 
@@ -114,7 +163,6 @@ function setup() {
 		}
 	})
 	recipe_textholder = new Plane({
-
 		x:0, y:recipey,z:recipez,
 		width: 1, height: 0.3,
 		red: 255, green: 255, blue: 255,
@@ -195,7 +243,13 @@ function setup() {
 	//show the HUD
 	world.camera.cursor.show();
 
+<<<<<<< HEAD
 
+=======
+	// Ajust Camera
+	world.setUserPosition(camX,camY,camZ)
+	//world.camera.holder.removeAttribute('wasd-controls')
+>>>>>>> 7926a081a50ea8ee48639971d5e8c95c67f7516f
 
 	//  ******** CUSTOMERS ********
 	customerx = 3
@@ -260,6 +314,7 @@ function setup() {
 		plate = new Interactables('dish_obj','dish_mtl',	0.85, 0.94, 5.13,	1.5,1.5,1.5,	0,0,0,	0.5,0.3,0.5,	'plate')
 	
 
+<<<<<<< HEAD
 		// mat
 		var mat = new Plane ({
 			x:0.87, y:0.91, z:5.13,
@@ -269,6 +324,8 @@ function setup() {
 		})
 		world.add(mat)
 
+=======
+>>>>>>> 7926a081a50ea8ee48639971d5e8c95c67f7516f
 		var blanket = new Plane ({
 			x:-0.92, y:0.91, z:4.13,
 			width:0.8, height:1,
@@ -293,13 +350,22 @@ function setup() {
 			rotationX:-90, rotationY:100,
 			asset: "stove",
 			clickFunction: function(theBox) {
+				stove_clicked = true
 				console.log("stove was clicked!")
 			}
 		})
 		world.add(stove)
 
+<<<<<<< HEAD
 		pot = new Objects('pot_obj','pot_mtl',-0.95,0.94,5.04,0.008,0.01,0.008,0,300,0,"pot")
 		pan = new Objects('pan_obj','pan_mtl',-0.66,1,5.49,1,1,1,0,270,0,"pan")
+=======
+		
+		pot = new Interactables('pot_obj','pot_mtl',-0.95,0.94,5.04,0.008,0.01,0.008,0,300,0,-0.95,0.94,5.04,0,0,0,0.5, "pot")
+//!-------------------------
+		//pot = new Objects('pot_obj','pot_mtl',-0.95,0.94,5.04,0.008,0.01,0.008,0,300,0,"pot")
+		var pan = new Objects('pan_obj','pan_mtl',-0.66,1,5.49,1,1,1,0,270,0,"pan")
+>>>>>>> 7926a081a50ea8ee48639971d5e8c95c67f7516f
 
 
 	//  ******** PREPARATION AREA ********
@@ -379,6 +445,7 @@ function setup() {
 
 	// ******** SPICE SHELF ********
 		// spice shelf
+<<<<<<< HEAD
 		shelf = new Objects('shelf_obj','shelf_mtl',0,0.84,3.64,0.99,0.63,0.72,0,0,0,"shelf")
 		ketchup = new Objects('ketchup_obj','ketchup_mtl',-0.51,1,4.17,0.0003,0.0003,0.0003,0,60,0,"ketchup")
 		trashCan =  new Interactables('trashCan_obj','trashCan_mtl',	0.28,0.112,4.979,	0.002,0.002,0.002,	0,0,0,	0.3,0.3,0.3, "Trash Can")
@@ -388,6 +455,65 @@ function setup() {
 		bread= new Objects('bread_obj','bread_mtl',		-1.13,1,4.276,	1,1,1,	-80,30,0,	"bread")
 		tomato= new Interactables('tomato_obj','tomato_mtl',	-0.5,1.45,3.64,	0.005,0.005,0.005,	-90,0,0, 0.3,0.3,0.3,	"tomato")
 		cheese = new Box({
+=======
+		var shelf = new Objects('shelf_obj','shelf_mtl',0,0.84,3.64,0.99,0.63,0.72,0,0,0,"shelf")
+		var ketchup = new Objects('ketchup_obj','ketchup_mtl',-0.51,1,4.17,0.0003,0.0003,0.0003,0,60,0,"ketchup")
+		var trashCan =  new Objects('trashCan_obj','trashCan_mtl',0.28,0.112,4.979,0.002,0.002,0.002,0,0,0,"trashCan")
+		var hotSauce =  new Objects('hotSauce_obj','hotSauce_mtl',-0.22,1.18,3.75,0.3,0.3,0.3,0,180,0,"hotSauce")
+
+		// ingrediants
+		var bread= new Interactables('bread_obj','bread_mtl',		-1.13,1,4.276,	1,1,1,	-80,30,0,	-1.13,1,4.276,	-80,30,0,0.3,	"bread")
+		// 	_asset,		_mtl,			x,	y,	z,		sX,sY,sZ,_rotationX,_rotationY,_rotationZ,	hitboxX,hitboxY,hitboxZ, hitRotationX, hitRotationY, hitRotationZ, hitBozScale,_name
+		var tomato= new Interactables('tomato_obj','tomato_mtl',	-0.5,1.45,3.64,	0.005,0.005,0.005,	-90,0,0,  -0.5,1.47,3.78,0,0,0,0.3,	"tomato")
+		
+		var egg = new Interactables('egg_obj', 'egg_mtl', -0.172, 1.382, 5.97, 0.001,0.001,0.001, -80,30,0,	-0.172, 1.390, 5.97,0,0,0,0.2, "egg")
+
+		var noodle = new Container3D({
+		})
+
+		world.add(noodle)
+
+		for (var i =0;i<5;i++){
+
+			var pasta = new TorusKnot({
+				x:-0.172+0.03*i, y:1.200+0.001*i, z:5.97,
+				width:0.1,	height:0.08, depth: 0.13,
+				red:244, green:188, blue:25,
+				scaleX:0.02, scaleY:0.02, scaleZ: 0.02,
+				rotationX:0.1+0.05*i, rotationY:0.1 +0.05*i, rotationZ:0.1+0.05*i,
+				clickFunction: function(theBox) {
+					console.log("NOODLE!");
+					selected_items_name = "noodle"
+					if(holding == false){
+						holding = true
+						holdingitem_show_box.setAsset("noodle_hold")
+						noodle_clicked = true
+
+							selected_items = new Box({
+								width:0.2,
+								height:0.02,
+								depth:0.2,
+								red:255,green:255,blue:0,
+								rotationX: 0
+							})
+						}
+					// if user would like to put back the item
+					else {
+						holding = false
+						holdingitem_show_box.setAsset("")
+
+						holdingitem.hide()
+						holding_item_name = ''
+					}
+					console.log("noodle was clicked!")
+				}
+			})
+			noodle.add(pasta)
+		}
+
+
+		var cheese = new Box({
+>>>>>>> 7926a081a50ea8ee48639971d5e8c95c67f7516f
 			x:0.072, y:1.387, z:5.97,
 			width:0.07,	height:0.05, depth: 0.13,
 			red:244, green:208, blue:63,
@@ -409,7 +535,6 @@ function setup() {
 				else {
 					holding = false
 					holdingitem_show_box.setAsset("")
-
 					holdingitem.hide()
 					holding_item_name = ''
 				}
@@ -460,6 +585,7 @@ function setup() {
 					selected_items_name = undefined
 				}
 
+<<<<<<< HEAD
 			}
 		})
 		clearSelectionBtn.tag.setAttribute('text','value: Clear Selection ; color: rgb(0,0,0); align:center; height: 1; width:1;')
@@ -477,6 +603,9 @@ function setup() {
 		selectionUI.tag.setAttribute('cursor','rayOrigin: mouse')		
 		world.camera.holder.appendChild(selectionUI.tag);
 		world.camera.holder.appendChild(clearSelectionBtn.tag);
+=======
+	//Action init: Select Tools
+>>>>>>> 7926a081a50ea8ee48639971d5e8c95c67f7516f
 
 
 
@@ -495,7 +624,6 @@ function draw() {
 		remaining_time -= 1
 		if(remaining_time <= 0){
 
-
 			current_customer.remove_from_world()
 			let prev_customer = current_customer
 			while(prev_customer == current_customer){
@@ -505,7 +633,33 @@ function draw() {
 			current_customer.add_to_world()
 			remaining_time = int(random(15,30))
 			score -= 1
-			score_holder.tag.setAttribute('text','value: Score: ' +score+  '\n Remaining Time: '+remaining_time+' ; color: rgb(0,0,0); align: center;');
+			score_holder.tag.setAttribute('text','value: Score: ' + score +  '\n Remaining Time: ' + remaining_time + ' ; color: rgb(0,0,0); align: center;');
+		}
+	}
+
+	if (bubbled == false){
+	// ******** EFFECTS ********
+		for (var i =0;i<3;i++){
+			var bubbles = new Bubbles(-0.95,0.94,5.04)
+			bubble.push(bubbles)
+		}
+		bubbled = true
+	}
+
+	if (stove_clicked == true && noodle_in_pot == true && water_filled == true && egg_in_pot == true){
+		if (boil.isPlaying()==false){
+			boil.play()
+		}
+		for (var i = 0; i < bubble.length; i++) {
+			console.log("bubbling!!")
+			var result = bubble[i].move();
+			if (result == "gone") {
+				bubble.splice(i, 1);
+				i-=1;
+			}
+		}
+		if (bubble.length == 0){
+			boiled = true
 		}
 	}
 
@@ -538,7 +692,7 @@ function set_random_customer_order(){
 
 	}
 	else if(customer_order == "Noodle"){
-		recipe_detail = "The Customer wants some Noodles"
+		recipe_detail = "The Customer wants some Noodles \n\n Get the pasta and the egg from the frige \n Put them into the pot \n Boil them"
 	}
 	else if(customer_order == "Sandwich"){
 		recipe_detail = "The Customer wants a Sandwich \n\n Get the bread on the cutting board \n Get the tomato on the cuttin board \n Get the cheese on the cutting board \n Get the bread on the cutting board"
@@ -579,10 +733,21 @@ function check_recipe(){
 		}
 	}
 	else if(customer_order == "Noodle"){
-
+		if (noodle_finished ==  true){
+			iscorrect_food = true
+			score += remaining_time * 3
+			console.log("GOOD JOB");
+			score_holder.tag.setAttribute('text','value: Score: ' +score+  '\n Remaining Time: '+remaining_time+' ; color: rgb(0,0,0); align: center;');
+		}
+		else{
+			iscorrect_food = false
+			score -= 1
+			score_holder.tag.setAttribute('text','value: Score: ' +score+  '\n Remaining Time: '+remaining_time+' ; color: rgb(0,0,0); align: center;');
+		}
 
 	}
 }
+<<<<<<< HEAD
 
 function plateFunction(theBox){
 
@@ -672,13 +837,57 @@ function knifeMovement(){
 		selected_items_name = undefined
 
 		world.remove(holdingitem)		// remove cursor knife - prevent overloading the browser
+=======
+// CLASSES ----------------------------------------------------------------------
+class Bubbles{
+
+	constructor(x,y,z) {
+
+		this.myBox = new Sphere({
+			x:x+random(0.035, 0.045), y:y-0.2+random(0.15, 0.22), z:z+random(0.01, 0.05),
+			red: 255, green:230, blue:random(170,180),
+			radius: 0.015
+		});
+
+		world.add(this.myBox);
+
+		this.xOffset = random(1000);
+		this.zOffset = random(2000, 3000);
+	}
+
+	move() {
+
+		var yMovement = 0.001;
+		var xMovement = map( noise(this.xOffset), 0, 1, -0.001, 0.001);
+		var zMovement = map( noise(this.zOffset), 0, 1, -0.001, 0.001);
+
+		this.xOffset += 0.01;
+		this.yOffset += 0.01;
+
+
+		this.myBox.nudge(xMovement, yMovement, zMovement);
+
+		var boxScale = this.myBox.getScale();
+		this.myBox.setScale( boxScale.x-0.0025, boxScale.y-0.0025, boxScale.z-0.0025);
+
+		if (boxScale.x <= 0) {
+			world.remove(this.myBox);
+			return "gone";
+		}
+		else {
+			return "ok";
+		}
+>>>>>>> 7926a081a50ea8ee48639971d5e8c95c67f7516f
 	}
 }
 
 
+<<<<<<< HEAD
 
 // ****************************** CLASSES ******************************
 // ---------------------------------------------------------------------
+=======
+>>>>>>> 7926a081a50ea8ee48639971d5e8c95c67f7516f
 class Walls {
 	constructor(x,z,yrotate){
 		this.wall = new Plane({
@@ -765,6 +974,9 @@ class Fridge {
 		world.add(this.myContainer)
 	}
 	Open_Door(){
+		if (fridge_open.isPlaying()==false){
+			fridge_open.play()
+		}
 		this.fridgeDoorOpen.show()
 		this.fridgeDoorClosed.hide()
 		this.fridgeDoorClosed.setY(-100)
@@ -774,6 +986,9 @@ class Fridge {
 		this.isclose = false;
 	}
 	Close_Door(){
+		if (fridge_close.isPlaying()==false){
+			fridge_close.play()
+		}
 		this.fridgeDoorOpen.hide()
 		this.fridgeDoorClosed.show()
 		this.fridgeDoorClosed.setY(1.34)
@@ -854,6 +1069,236 @@ class Interactables {
 				// update current selection name
 				selected_items_name = _name
 
+<<<<<<< HEAD
+=======
+
+				if(selected_items_name != 'plate'){
+
+					// the user has seleted an item
+					if(holding == false){
+						holding = true
+
+						// update holding item
+							// unable to refer to the obejct directly via this.utensil
+							// therefore have to create another obj
+
+						if(selected_items_name == "tomato"){
+							holdingitem_show_box.setAsset("tomato_hold")
+							selected_items = new Cylinder({
+								x:x, y:y, z:z,
+								radius: 0.1,
+								height:0.02,
+								red:255,green:0,blue:0,
+								rotationX: 0
+							})
+
+						}
+						else if(selected_items_name == "bread"){
+							holdingitem_show_box.setAsset("bread_hold")
+							selected_items = new OBJ({asset:_asset,
+								mtl: _mtl,
+								x:x, y:y, z:z,
+								scaleX: sX, scaleY:sY, scaleZ: sZ,
+								rotationX:_rotationX,
+								rotationY:_rotationY,
+								rotationZ:_rotationZ
+							})
+
+						}
+
+						else if(selected_items_name == "egg"){
+							egg_clicked = true;
+							holdingitem_show_box.setAsset("egg_hold")
+							selected_items = new OBJ({asset:_asset,
+								mtl: _mtl,
+								x:x, y:y, z:z,
+								scaleX: sX, scaleY:sY, scaleZ: sZ,
+								rotationX:_rotationX,
+								rotationY:_rotationY,
+								rotationZ:_rotationZ
+							})
+
+						}
+
+						else if (selected_items_name == 'pot'){
+							console.log("plate_clicked: "+plate_clicked)
+							//if boiled then remove from world after clicking the pot again
+							if (boiled == true) {
+								console.log("removed!")
+	
+								noodle_prepared =  new Container3D({
+								})
+
+								var noodle1_temp = new TorusKnot({
+											x:0.72, y:0.98, z:5.10,
+											red:244, green:188, blue:25,
+											scaleX:0.02, scaleY:0.02, scaleZ: 0.02,
+											rotationX:0.1, rotationY:0.1, rotationZ:0.1,
+								})
+
+								var noodle2_temp = new TorusKnot({
+											x:0.79, y:0.98, z:5.14,
+											red:244, green:188, blue:25,
+											scaleX:0.02, scaleY:0.02, scaleZ: 0.02,
+											rotationX:0.1, rotationY:0.1, rotationZ:0.1,
+								})
+
+								var noodle3_temp = new TorusKnot({
+											x:0.84, y:0.98, z:5.09,
+											red:244, green:188, blue:25,
+											scaleX:0.02, scaleY:0.02, scaleZ: 0.02,
+											rotationX:0.1, rotationY:0.1, rotationZ:0.1,
+								})
+								var noodle4_temp = new TorusKnot({
+											x:0.82, y:0.98, z:5.11,
+											red:244, green:188, blue:25,
+											scaleX:0.02, scaleY:0.02, scaleZ: 0.02,
+											rotationX:0.1, rotationY:0.1, rotationZ:0.1,
+								})
+
+								var noodle5_temp = new TorusKnot({
+											x:0.76, y:0.98, z:5.13,
+											red:244, green:188, blue:25,
+											scaleX:0.02, scaleY:0.02, scaleZ: 0.02,
+											rotationX:0.1, rotationY:0.1, rotationZ:0.1,
+								})
+
+								var noodle6_temp = new TorusKnot({
+											x:0.81, y:0.98, z:5.16,
+											red:244, green:188, blue:25,
+											scaleX:0.02, scaleY:0.02, scaleZ: 0.02,
+											rotationX:0.1, rotationY:0.1, rotationZ:0.1,
+								})
+
+								var noodle7_temp = new TorusKnot({
+											x:0.75, y:0.98, z:5.08,
+											red:244, green:188, blue:25,
+											scaleX:0.02, scaleY:0.02, scaleZ: 0.02,
+											rotationX:0.1, rotationY:0.1, rotationZ:0.1,
+								})
+
+								var soup_temp = new Cylinder({
+									x:0.81, y:0.96, z:5.13,
+									radius:0.20,
+									height: 0.005,
+									red:255, green:230 , blue:179
+								})
+
+								var egg_temp = new OBJ({
+									asset:'egg_obj',
+									mtl:'egg_mtl',
+									x:0.83, y:1.01, z:5.10,
+									scaleX: 0.001, scaleY:0.001, scaleZ: 0.001
+								})
+
+								noodle_prepared.addChild(egg_temp)
+								noodle_prepared.addChild(noodle1_temp)
+								noodle_prepared.addChild(noodle2_temp)
+								noodle_prepared.addChild(noodle3_temp)
+								noodle_prepared.addChild(noodle4_temp)
+								noodle_prepared.addChild(noodle5_temp)
+								noodle_prepared.addChild(noodle6_temp)
+								noodle_prepared.addChild(noodle7_temp)
+								noodle_prepared.addChild(soup_temp)
+
+
+								if (food_to_plate.isPlaying()==false){
+									food_to_plate.play()
+								}
+								world.add(noodle_prepared)
+							
+							
+
+								egg1.setY(-100)
+								pasta1.setY(-100)
+								pasta2.setY(-100)
+								water.setY(-100)
+
+								boiled = false
+								water_filled = false
+								egg_in_pot = false
+								noodle_in_pot = false
+								bubbled = false
+								noodle_finished = true
+							}
+
+							else{
+
+								soup = new Container3D({
+								})
+
+								world.add(soup)
+
+								if (water_filled == false){
+									//one click fill the pot with water
+									water = new Cylinder({
+										x:x, y:y+0.08, z:z,
+										red:255, green:230, blue:179,
+										height: 0.10, radius: 0.130
+									})
+
+									if (water_pouring.isPlaying()==false){
+										water_pouring.play()
+									}
+
+									soup.addChild(water)
+									water_filled = true
+									console.log("filled!")
+								}
+
+								if (egg_clicked == true && holding == true){
+									if (egg_in_pot ==  false){
+										egg1 = new OBJ({
+											asset:'egg_obj',
+											mtl:'egg_mtl',
+											x:x-0.02, y:y+0.14, z:z-0.01,
+											scaleX: 0.001, scaleY:0.001, scaleZ: 0.001
+										})
+										if (egg_cracking.isPlaying()==false){
+											egg_cracking.play()
+										}
+										soup.addChild(egg1)
+										egg_in_pot = true
+										egg_clicked = false
+									}
+								}
+
+
+								// if the user is taking the noodle
+								if (noodle_clicked == true && holding ==  true){
+									//put noodle into the pot
+									if(noodle_in_pot == false){
+										pasta1 = new TorusKnot({
+											x:x, y:y+0.13, z:z,
+											red:244, green:188, blue:25,
+											scaleX:0.02, scaleY:0.02, scaleZ: 0.02,
+											rotationX:0.1, rotationY:0.1, rotationZ:0.1,
+										})
+										soup.addChild(pasta1)
+										pasta2 = new TorusKnot({
+											x:x+0.04, y:y+0.12, z:z+0.02,
+											red:244, green:188, blue:25,
+											scaleX:0.02, scaleY:0.02, scaleZ: 0.02,
+											rotationX:0.1+0.05, rotationY:0.1 +0.1, rotationZ:0.1+0.05,
+										})
+										soup.addChild(pasta2)
+										noodle_in_pot = true
+									}
+									noodle_clicked = false
+								}
+
+								console.log("pot!")
+							}
+						}
+
+						if(selected_items_name == 'knife'){
+							knife_clicked = true
+
+						}else{
+							knife_clicked = false
+						}
+
+>>>>>>> 7926a081a50ea8ee48639971d5e8c95c67f7516f
 
 				if(selected_items_name == 'knife'){
 					if(knife_clicked){
@@ -883,10 +1328,13 @@ class Interactables {
 		
 		this.container.add(this.hitbox)
 		world.add(this.container)
-
-
 	}
 
+<<<<<<< HEAD
+=======
+	checkmark(){
+	}
+>>>>>>> 7926a081a50ea8ee48639971d5e8c95c67f7516f
 
 }
 
@@ -945,7 +1393,13 @@ class Customer{
 				//check food
 				check_recipe()
 				if(iscorrect_food){
-
+					if (noodle_finished = true){
+						noodle_finished = false
+						world.remove(noodle_prepared)
+					}
+					if (eating.isPlaying() == false){
+						eating.play()
+					}
 					//score
 					current_customer.remove_from_world()
 					let prev_customer = current_customer
@@ -1018,4 +1472,9 @@ class Customer{
 
 	}
 
+<<<<<<< HEAD
 }
+=======
+}
+
+>>>>>>> 7926a081a50ea8ee48639971d5e8c95c67f7516f
